@@ -30,7 +30,7 @@ namespace Neon.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] AddAssetResource addAssetResource) {
+        public async Task<IActionResult> Post(AddAssetResource addAssetResource) {
             try {
                 var input = new AddAssetCommand.Input(addAssetResource.Name, addAssetResource.Type, addAssetResource.ContextName);
                 var asset = await _mediator.Send(input);
