@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Neon.Server.Models;
 using Neon.Server.Commands;
 using MediatR;
+using Neon.Server.Extensions;
 
 namespace Neon.Server.Controllers
 {
@@ -26,12 +27,20 @@ namespace Neon.Server.Controllers
         [HttpGet]
         public IEnumerable<Asset> Get()
         {
-            return Enumerable.Empty<Asset>();
+            //return Enumerable.Empty<Asset>();
+            return new List<Asset> {
+                new Asset("Ausbildungskalender", EAssetType.WebsiteUrl, new AssetContext("TD"), new WebisteUrlContent("https://ddf783hjs.europe-west1.aws.com"))
+            };
         }
 
         [HttpPost]
         public async Task<IActionResult> Post(AddAssetResource addAssetResource) {
             try {
+                WebsiteUrlAsset wua;
+                if (addAssetResource.Type == EAssetType.WebsiteUrl) {
+                    wua = addAssetResource.Content.ToObject<WebsiteUrlAsset>();
+                }
+
                 var input = new AddAssetCommand.Input(addAssetResource.Name, addAssetResource.Type, addAssetResource.ContextName);
                 var asset = await _mediator.Send(input);
                 return Ok(asset);
