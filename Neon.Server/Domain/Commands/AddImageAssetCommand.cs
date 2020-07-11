@@ -15,14 +15,16 @@ namespace Neon.Server.Commands
             public string Name { get; }
             public EAssetType Type { get; } = EAssetType.Image;
             public string ContextName { get; }
-            public Stream Content { get;} 
+            public Stream Content { get; }
+            public string ContentType { get; }
             public int DisplayTime { get; }
 
-            public Input(string name, string contextName, int displayTime, Stream content) {
+            public Input(string name, string contextName, int displayTime, Stream content, string contentType) {
                 Name = name ?? throw new ArgumentNullException(nameof(name));
                 ContextName = contextName ?? throw new ArgumentNullException(nameof(contextName));
                 DisplayTime = displayTime;
                 Content = content ?? throw new ArgumentNullException(nameof(content));
+                ContentType = contentType;
             }
         }
 
@@ -32,7 +34,7 @@ namespace Neon.Server.Commands
             => _assetCollection = assetCollection;
 
         public async Task<ImageAsset> Handle(Input request, CancellationToken cancellationToken) {
-            var asset = new ImageAsset(request.Name, new AssetContext(request.ContextName), request.DisplayTime);
+            var asset = new ImageAsset(request.Name, new AssetContext(request.ContextName), request.DisplayTime, request.ContentType);
             await _assetCollection.InsertOneAsync(asset, null, cancellationToken);
             await asset.Data.UploadAsync(request.Content);
             return asset;

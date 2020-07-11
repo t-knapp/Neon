@@ -26,15 +26,33 @@ namespace Neon.Server.Controllers {
             return Enumerable.Empty<ImageAssetResource>();
         }
 
+        [HttpGet]
+        [Route("{id}/content")]
+        public async Task<IActionResult> GetImage(string id) {
+            // TODO: Where is the Stream closed?
+            try {
+                var query = new GetAssetImageQuery.Input(id);
+                var stream = await _mediator.Send(query);
+                await stream.FlushAsync();
+                return File(stream, "image/png");
+            } catch (Exception ex) {
+                _logger.LogError(ex, "Cannot get asset content.");
+                return null;
+            }
+        }
+
         [HttpPost]
         public async Task<ActionResult<ImageAssetResource>> Add([FromForm] AddImageAssetResource addResource) {
             Stream stream = null;
             try {
                 stream = addResource.Image.OpenReadStream();
-                var command = new AddImageAssetCommand.Input(addResource.Name, addResource.ContextName, 15, stream);
+                var command = new AddImageAssetCommand.Input(
+                    addResource.Name, addResource.ContextName, addResource.DisplayTime, stream, addResource.Image.ContentType
+                );
                 var result = await _mediator.Send(command);
                 return Ok(_mapper.Map<ImageAssetResource>(result));
             } catch (Exception ex) {
+                _logger.LogError(ex, "Cannot add image asset.");
                 return BadRequest(ex);
             } finally {
                 if (stream != null)
