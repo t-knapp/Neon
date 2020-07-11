@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using System.IO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Neon.Server.Models;
-using Neon.Server.Commands;
+using AutoMapper;
 using MediatR;
+using Neon.Server.Commands;
 
 namespace Neon.Server.Controllers {
     [ApiController]
@@ -16,24 +16,24 @@ namespace Neon.Server.Controllers {
 
         private readonly ILogger<ImageAssetsController> _logger;
         private readonly IMediator _mediator;
+        private readonly IMapper _mapper;
 
-        public ImageAssetsController(ILogger<ImageAssetsController> logger, IMediator mediator)
-            => (_logger, _mediator) = (logger, mediator);
+        public ImageAssetsController(ILogger<ImageAssetsController> logger, IMediator mediator, IMapper mapper)
+            => (_logger, _mediator, _mapper) = (logger, mediator, mapper);
 
         [HttpGet]
-        public IEnumerable<ImageAsset> Get() {
-            return Enumerable.Empty<ImageAsset>();
+        public IEnumerable<ImageAssetResource> Get() {
+            return Enumerable.Empty<ImageAssetResource>();
         }
 
         [HttpPost]
-        public async Task<ActionResult<ImageAsset>> Add([FromForm] AddImageAssetResource addResource) {
+        public async Task<ActionResult<ImageAssetResource>> Add([FromForm] AddImageAssetResource addResource) {
             Stream stream = null;
             try {
                 stream = addResource.Image.OpenReadStream();
-                var command = new AddImageAssetCommand.Input(addResource.Name, addResource.ContextName, TimeSpan.FromSeconds(15), stream);
+                var command = new AddImageAssetCommand.Input(addResource.Name, addResource.ContextName, 15, stream);
                 var result = await _mediator.Send(command);
-
-                return Ok(result);
+                return Ok(_mapper.Map<ImageAssetResource>(result));
             } catch (Exception ex) {
                 return BadRequest(ex);
             } finally {

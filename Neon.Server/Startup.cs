@@ -14,6 +14,7 @@ using Microsoft.Extensions.Options;
 using MediatR;
 using MongoDB.Driver;
 using MongoDB.Entities;
+using AutoMapper;
 using Neon.Server.Configuration;
 
 namespace Neon.Server
@@ -47,6 +48,8 @@ namespace Neon.Server
                 .AddSingleton( typeof( IMongoCollection<> ), typeof( MongoCollection<> ) );
 
             services.AddControllers();
+
+            services.AddAutoMapper( typeof( Startup ) );
 
             services.AddMediatR( typeof( Startup ) );
         }
