@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using MongoDB.Driver;
-using MongoDB.Entities;
 using Neon.Server.Models;
 
 namespace Neon.Server.Commands

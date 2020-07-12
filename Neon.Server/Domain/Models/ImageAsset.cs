@@ -7,7 +7,7 @@ namespace Neon.Server.Models {
         public AssetContext Context { get; set; }
         public int DisplayTime { get; set; }
         public EAssetType Type { get; } = EAssetType.Image;
-        public string ContentType { get; }
+        public string ContentType { get; set; }
 
         public ImageAsset(string name, AssetContext context, int displayTime, string contentType) {
             Name = name ?? throw new ArgumentNullException(nameof(name));

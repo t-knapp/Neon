@@ -3,5 +3,7 @@ namespace Neon.Server.Controllers {
         public string Id { get; set; }
         public string Name { get; set; }
         public int DisplayTime { get; set; }
+
+        public ImageAssetResource() { }
     }
 }

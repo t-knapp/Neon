@@ -7,13 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using AutoMapper;
 using MediatR;
+using Neon.Server.Models;
 using Neon.Server.Commands;
 
 namespace Neon.Server.Controllers {
     [ApiController]
     [Route("[controller]")]
     public class ImageAssetsController : ControllerBase {
-
         private readonly ILogger<ImageAssetsController> _logger;
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
@@ -22,22 +22,50 @@ namespace Neon.Server.Controllers {
             => (_logger, _mediator, _mapper) = (logger, mediator, mapper);
 
         [HttpGet]
-        public IEnumerable<ImageAssetResource> Get() {
-            return Enumerable.Empty<ImageAssetResource>();
+        public async Task<ActionResult<IEnumerable<ImageAssetResource>>> List() {
+            try {
+                var query = new ListImageAssetsQuery.Input();
+                var assets = await _mediator.Send(query);
+                return Ok(_mapper.Map<IEnumerable<ImageAsset>, List<ImageAssetResource>>(assets.ToList()));
+            } catch (Exception ex) {
+                _logger.LogError(ex, "Cannot list image assets.");
+                return null;
+            }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<ImageAssetResource>> Get(string id) {
+            if (string.IsNullOrEmpty(id))
+                return BadRequest();
+
+            try {
+                var query = new AssetImageQuery.Input(id);
+                var tuple = await _mediator.Send(query);
+                return Ok(_mapper.Map<ImageAssetResource>(tuple.Item1));
+            } catch (ArgumentException ex) {
+                _logger.LogError(ex, $"Asset '{id}' not found.");
+                return NotFound();
+            }
+             catch (Exception ex) {
+                _logger.LogError(ex, $"Cannot get image asset '{id}'.");
+                return NoContent();
+            }
         }
 
         [HttpGet]
         [Route("{id}/content")]
         public async Task<IActionResult> GetImage(string id) {
-            // TODO: Where is the Stream closed?
             try {
-                var query = new GetAssetImageQuery.Input(id);
-                var stream = await _mediator.Send(query);
-                await stream.FlushAsync();
-                return File(stream, "image/png");
+                var query = new AssetImageQuery.Input(id, true);
+                var tuple = await _mediator.Send(query); // TODO: Where and when is the stream closed?
+                await tuple.Item2.FlushAsync();
+                return File(tuple.Item2, tuple.Item1.ContentType ?? "application/octet-stream");
+            } catch (ArgumentException ex) {
+                _logger.LogError(ex, $"Asset '{id}' not found.");
+                return NotFound();
             } catch (Exception ex) {
-                _logger.LogError(ex, "Cannot get asset content.");
-                return null;
+                _logger.LogError(ex, $"Cannot get image asset content '{id}'.");
+                return NoContent();
             }
         }
 
@@ -45,7 +73,7 @@ namespace Neon.Server.Controllers {
         public async Task<ActionResult<ImageAssetResource>> Add([FromForm] AddImageAssetResource addResource) {
             Stream stream = null;
             try {
-                stream = addResource.Image.OpenReadStream();
+                stream = addResource.Image.OpenReadStream(); // TODO: Where and when is the stream closed?
                 var command = new AddImageAssetCommand.Input(
                     addResource.Name, addResource.ContextName, addResource.DisplayTime, stream, addResource.Image.ContentType
                 );
@@ -57,6 +85,22 @@ namespace Neon.Server.Controllers {
             } finally {
                 if (stream != null)
                     stream.Close();
+            }
+        }
+
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<ActionResult<ImageAssetResource>> Delete(string id) {
+            if (string.IsNullOrEmpty(id))
+                return BadRequest();
+
+            try {
+                var command = new DeleteImageAssetCommand.Input(id);
+                var result = await _mediator.Send(command);
+                return Ok(_mapper.Map<ImageAssetResource>(result));
+            } catch (Exception ex) {
+                _logger.LogError(ex, $"Cannot delete image asset '{id}'.");
+                return null;
             }
         }
     }
