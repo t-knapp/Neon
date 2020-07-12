@@ -12,26 +12,139 @@
 					"name": "Assets",
 					"item": [
 						{
-							"name": "Add Asset",
+							"name": "List Images",
 							"request": {
-								"method": "POST",
+								"method": "GET",
 								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"Name\": \"Kalender-Geburtstage\",\n    \"ContextName\": \"Ausbildung\",\n    \"Type\": 2,\n    \"Content\": {\n        \"Url\": \"http://www.thw-kh.de\"\n    }\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
 								"url": {
-									"raw": "{{Host}}/Assets",
+									"raw": "{{Host}}/ImageAssets",
 									"host": [
 										"{{Host}}"
 									],
 									"path": [
-										"Assets"
+										"ImageAssets"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Image Content",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/ImageAssets/5f0b57a5af43810cd7b954a4/content",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"ImageAssets",
+										"5f0b57a5af43810cd7b954a4",
+										"content"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Image",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/ImageAssets/5f0b57a5af43810cd7b954a4",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"ImageAssets",
+										"5f0b57a5af43810cd7b954a4"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add Image",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "Name",
+											"value": "THW-Logo",
+											"type": "text"
+										},
+										{
+											"key": "ContextName",
+											"value": "Ausbildung",
+											"type": "text"
+										},
+										{
+											"key": "DisplayTime",
+											"value": "15",
+											"type": "text"
+										},
+										{
+											"key": "Image",
+											"type": "file",
+											"src": "/home/tknapp/Downloads/THW.svg.png"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{Host}}/ImageAssets",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"ImageAssets"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Image",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "Name",
+											"value": "Factorio",
+											"type": "text"
+										},
+										{
+											"key": "ContextName",
+											"value": "Spass",
+											"type": "text"
+										},
+										{
+											"key": "DisplayTime",
+											"value": "5",
+											"type": "text"
+										},
+										{
+											"key": "Image",
+											"type": "file",
+											"src": "/home/tknapp/Downloads/bViy7aE.jpg"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{Host}}/ImageAssets/5f0b57a5af43810cd7b954a4",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"ImageAssets",
+										"5f0b57a5af43810cd7b954a4"
 									]
 								}
 							},
@@ -69,7 +182,7 @@
 	],
 	"variable": [
 		{
-			"id": "aa81f233-df33-4099-b756-1c5dec0af4b0",
+			"id": "54daee18-d168-4298-ad71-4bbf346b033b",
 			"key": "Host",
 			"value": "https://localhost:5001"
 		}
