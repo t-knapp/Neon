@@ -52,6 +52,8 @@ namespace Neon.Server
             services.AddAutoMapper( typeof( Startup ) );
 
             services.AddMediatR( typeof( Startup ) );
+
+            services.AddSwaggerGen();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -67,6 +69,13 @@ namespace Neon.Server
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Neon.Server API");
+            });
 
             app.UseEndpoints(endpoints =>
             {
