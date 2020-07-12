@@ -34,12 +34,13 @@ namespace Neon.Server.Controllers {
         }
 
         [HttpGet]
+        [Route("{id}")]
         public async Task<ActionResult<ImageAssetResource>> Get(string id) {
             if (string.IsNullOrEmpty(id))
                 return BadRequest();
 
             try {
-                var query = new AssetImageQuery.Input(id);
+                var query = new ImageAssetQuery.Input(id);
                 var tuple = await _mediator.Send(query);
                 return Ok(_mapper.Map<ImageAssetResource>(tuple.Item1));
             } catch (ArgumentException ex) {
@@ -56,7 +57,7 @@ namespace Neon.Server.Controllers {
         [Route("{id}/content")]
         public async Task<IActionResult> GetImage(string id) {
             try {
-                var query = new AssetImageQuery.Input(id, true);
+                var query = new ImageAssetQuery.Input(id, true);
                 var tuple = await _mediator.Send(query); // TODO: Where and when is the stream closed?
                 await tuple.Item2.FlushAsync();
                 return File(tuple.Item2, tuple.Item1.ContentType ?? "application/octet-stream");

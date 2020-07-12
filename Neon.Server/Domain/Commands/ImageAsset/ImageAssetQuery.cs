@@ -7,7 +7,7 @@ using MongoDB.Driver;
 using Neon.Server.Models;
 
 namespace Neon.Server.Commands {
-    public class AssetImageQuery : IRequestHandler<AssetImageQuery.Input, Tuple<ImageAsset, Stream>> {
+    public class ImageAssetQuery : IRequestHandler<ImageAssetQuery.Input, Tuple<ImageAsset, Stream>> {
         public class Input : IRequest<Tuple<ImageAsset, Stream>> {
             public string Id { get; set; }
             public bool ShouldIncludeData { get; set; }
@@ -18,10 +18,10 @@ namespace Neon.Server.Commands {
 
         private readonly IMongoCollection<ImageAsset> _assetCollection;
 
-        public AssetImageQuery(IMongoCollection<ImageAsset> assetCollection)
+        public ImageAssetQuery(IMongoCollection<ImageAsset> assetCollection)
             => _assetCollection = assetCollection;
 
-        public async Task<Tuple<ImageAsset, Stream>> Handle(AssetImageQuery.Input input, CancellationToken cancellationToken) {
+        public async Task<Tuple<ImageAsset, Stream>> Handle(ImageAssetQuery.Input input, CancellationToken cancellationToken) {
             var asset = await _assetCollection
                 .Find(a => a.ID == input.Id)
                 .SingleOrDefaultAsync(cancellationToken);
