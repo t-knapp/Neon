@@ -1,0 +1,9 @@
+{
+    "root": false,
+    "env": {
+        "jest": true
+    },
+    "globals": {
+        "global": true
+    }
+}

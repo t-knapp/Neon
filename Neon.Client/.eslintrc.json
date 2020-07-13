@@ -1,0 +1,90 @@
+{
+    "root": true,
+    "env": {
+        "browser": true,
+        "es6": true
+    },
+    "extends": [
+        "eslint:recommended",
+        "plugin:react/recommended"
+    ],
+    "parser": "babel-eslint",
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true,
+            "modules": true
+        },
+        "ecmaVersion": 2018,
+        "sourceType": "module"
+    },
+    "plugins": [
+        "react"
+    ],
+    "rules": {
+        "indent": [
+            "error",
+            4
+        ],
+        "quotes": [
+            "error",
+            "single",
+            { "allowTemplateLiterals": true }
+        ],
+        "semi": [
+            "error",
+            "always"
+        ],
+        "no-console": "off",
+        "no-unused-vars": "error",
+        "arrow-spacing": "error",
+        "space-unary-ops": "error",
+        "space-infix-ops": "error",
+        "no-trailing-spaces": "warn",
+        "comma-spacing": "error",
+        "no-extra-semi": "error",
+        "no-multi-spaces": [
+            "error",
+            {
+                "ignoreEOLComments": true,
+                "exceptions":
+                {
+                    "VariableDeclarator": true
+                }
+            }
+        ],
+        "react/no-render-return-value": "off"
+    },
+    "globals": {
+        "$": true,
+        "jQuery": true,
+        "console": true,
+        "navigator": true,
+        "lang": true,
+        "window": true,
+        "setInterval": true,
+        "setTimeout": true,
+        "clearTimeout": true,
+        "clearInterval": true,
+        "document": true,
+        "cordova": true,
+        "Event": true,
+        "Camera": true,
+        "Image": true,
+        "require": true,
+        "localStorage": true,
+        "CustomEvent": true,
+        "atob": true,
+        "chcp": true,
+        "alert": true,
+        "activation": true,
+        "pluginLogger": true,
+        "Blob": true,
+        "XMLHttpRequest": true,
+        "FileReader": true,
+        "LocalFileSystem": true,
+        "webToNetAPIObject": true,
+        "dgram": true,
+        "networkinterface": true,
+        "nameof":  true
+    }
+}

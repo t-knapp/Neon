@@ -1,0 +1,18 @@
+{
+  "presets": [
+    ["env", {
+      "targets": {
+        "browsers": ["Chrome >= 69", "ChromeAndroid >= 69", "iOS >= 11"],
+        "uglify": true
+      },
+      "useBuiltIns": true,
+      "exclude": ["transform-regenerator"]
+    }],
+    "react"
+  ],
+  "plugins": [
+    "transform-object-rest-spread",
+    "transform-decorators-legacy",
+    "transform-class-properties"
+  ]
+}
