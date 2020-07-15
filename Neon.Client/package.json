@@ -104,6 +104,8 @@
     "webpack-shell-plugin": "^0.5.0"
   },
   "dependencies": {
+    "mobx": "^5.15.4",
+    "mobx-react": "^6.2.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1"
   }
