@@ -1,16 +1,19 @@
 import { observable, action } from 'mobx';
-import IImageAssetProvider from '../providers/IImageAssetProvider';
+import HttpImageAssetProvider from '../providers/HttpImageAssetProvider';
 import ImageAsset from '../models/ImageAsset';
+import AddressBuilder from './AddressBuilder';
 
 export default class RotatorService {
     @observable public currentImageAssetUrl: string;
 
     private _index: number;
-    private _provider: IImageAssetProvider;
+    private _provider: HttpImageAssetProvider;
+    private _addressBuilder: AddressBuilder;
 
-    constructor(provider: IImageAssetProvider) {
+    constructor(provider: HttpImageAssetProvider) {
         this._provider = provider;
         this._index = 0;
+        this._addressBuilder = new AddressBuilder(provider.baseUrl);
     }
 
     public start(): void {
@@ -28,7 +31,7 @@ export default class RotatorService {
             this._index = (this._index + 1) >= list.length ? 0 : this._index + 1;
             const item: ImageAsset = list[this._index];
             console.log('item', item);
-            this.currentImageAssetUrl = 'https://localhost:5001/imageassets/' + item.id + '/content';
+            this.currentImageAssetUrl = this._addressBuilder.imageAssetContent(item.id).getUrl();
             window.setTimeout(() => this._rotate(), item.displayTime * 1000);
         } catch (ex) {
             this.currentImageAssetUrl = '';
