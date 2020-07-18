@@ -4,12 +4,9 @@ import AddressBuilder from '../services/AddressBuilder';
 
 export default class HttpImageAssetProvider implements IImageAssetProvider {
     private _baseUrl: string;
-    private _addressBuilder: AddressBuilder;
 
     constructor(baseUrl: string) {
         this._baseUrl = baseUrl;
-        this._addressBuilder = new AddressBuilder(baseUrl);
-        this._addressBuilder.imageAssetAll();
     }
 
     public get baseUrl(): string {
@@ -17,7 +14,7 @@ export default class HttpImageAssetProvider implements IImageAssetProvider {
     }
 
     public async allAsync(): Promise<ImageAsset[]> {
-        const request: Request = new Request(this._addressBuilder.getUrl());
+        const request: Request = new Request(new AddressBuilder(this._baseUrl).imageAssetAll().getUrl());
         const result: Response = await fetch(request);
         if (result.status === 200)
             return await result.json();
