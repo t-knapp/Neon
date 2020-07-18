@@ -2,9 +2,14 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 using MediatR;
 using MongoDB.Driver;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats;
+using SixLabors.ImageSharp.Processing;
 using Neon.Server.Models;
+using Neon.Server.Configuration;
 
 namespace Neon.Server.Commands
 {
@@ -28,15 +33,43 @@ namespace Neon.Server.Commands
         }
 
         private readonly IMongoCollection<ImageAsset> _assetCollection;
+        private readonly ImageOptions _imageOptions;
 
-        public AddImageAssetCommand(IMongoCollection<ImageAsset> assetCollection)
-            => _assetCollection = assetCollection;
+        public AddImageAssetCommand(IMongoCollection<ImageAsset> assetCollection, IOptions<ImageOptions> imageOptions) {
+            _assetCollection = assetCollection;
+            _imageOptions = imageOptions.Value;
+        }
 
         public async Task<ImageAsset> Handle(Input request, CancellationToken cancellationToken) {
             var asset = new ImageAsset(request.Name, new AssetContext(request.ContextName), request.DisplayTime, request.ContentType);
             await _assetCollection.InsertOneAsync(asset, null, cancellationToken);
-            await asset.Data.UploadAsync(request.Content);
+            await asset.Data.UploadAsync(FullHdIfy(request.Content));
+            request.Content.Close();
             return asset;
+        }
+
+        private Stream FullHdIfy(Stream raw) {
+            try {
+                using (Image image = Image.Load(raw, out IImageFormat mime))
+                {
+                    int destWidth = _imageOptions.MaxWidth;
+                    int destHeight = _imageOptions.MaxHeight;
+                    double xScaleFactor = image.Width / (double)_imageOptions.MaxWidth;
+                    double yScaleFactor = image.Height / (double)_imageOptions.MaxHeight;
+                    if (xScaleFactor >= yScaleFactor)
+                        destHeight = 0;
+                    else
+                        destWidth = 0;
+
+                    image.Mutate(x => x.Resize(destWidth, destHeight));
+
+                    var output = new MemoryStream();
+                    image.Save(output, mime);
+                    return output;
+                }
+            } catch (Exception) {
+                return raw;
+            }
         }
     }
 }

@@ -31,9 +31,9 @@ namespace Neon.Server
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services
-                .AddOptions()
-                .AddOptions<MongoDbOptions>().Bind(Configuration.GetSection("MongoDb"));
+            services.AddOptions();
+            services.AddOptions<MongoDbOptions>().Bind(Configuration.GetSection("MongoDb"));
+            services.AddOptions<ImageOptions>().Bind(Configuration.GetSection("Images"));
 
             services
                 .AddSingleton<DB>( s => {
