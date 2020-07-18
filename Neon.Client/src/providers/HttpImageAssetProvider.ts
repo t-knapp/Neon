@@ -23,4 +23,11 @@ export default class HttpImageAssetProvider implements IImageAssetProvider {
     public oneAsync(id: string): Promise<ImageAsset> {
         throw new Error('Method not implemented.');
     }
+
+    public async oneContentAsync(id: string): Promise<Blob> {
+        const request: Request = new Request(new AddressBuilder(this._baseUrl).imageAssetContent(id).getUrl());
+        const result: Response = await fetch(request);
+        if (result.status === 200)
+            return await result.blob();
+    }
 }
