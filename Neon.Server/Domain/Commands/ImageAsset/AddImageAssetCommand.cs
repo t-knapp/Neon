@@ -43,12 +43,12 @@ namespace Neon.Server.Commands
         public async Task<ImageAsset> Handle(Input request, CancellationToken cancellationToken) {
             var asset = new ImageAsset(request.Name, new AssetContext(request.ContextName), request.DisplayTime, request.ContentType);
             await _assetCollection.InsertOneAsync(asset, null, cancellationToken);
-            await asset.Data.UploadAsync(FullHdIfy(request.Content));
+            await asset.Data.UploadAsync(Resize(request.Content));
             request.Content.Close();
             return asset;
         }
 
-        private Stream FullHdIfy(Stream raw) {
+        private Stream Resize(Stream raw) {
             try {
                 using (Image image = Image.Load(raw, out IImageFormat mime))
                 {
