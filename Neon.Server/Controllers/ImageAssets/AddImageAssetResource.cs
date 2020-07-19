@@ -7,5 +7,7 @@ namespace Neon.Server.Controllers {
         public string ContextName { get; set; }
         public int DisplayTime { get; set; }
         public IFormFile Image { get; set; }
+        public DateTime? NotBefore { get; set; }
+        public DateTime? NotAfter { get; set; }
     }
 }

@@ -76,7 +76,13 @@ namespace Neon.Server.Controllers {
             try {
                 stream = addResource.Image.OpenReadStream(); // TODO: Where and when is the stream closed?
                 var command = new AddImageAssetCommand.Input(
-                    addResource.Name, addResource.ContextName, addResource.DisplayTime, stream, addResource.Image.ContentType
+                    addResource.Name,
+                    addResource.ContextName,
+                    addResource.DisplayTime,
+                    stream,
+                    addResource.Image.ContentType,
+                    addResource.NotBefore,
+                    addResource.NotAfter
                 );
                 var result = await _mediator.Send(command);
                 return Ok(_mapper.Map<ImageAssetResource>(result));
