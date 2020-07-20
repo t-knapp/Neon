@@ -12,10 +12,12 @@ import RotatorService from '../../services/RotatorService';
 import Management from '../Management/Management';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import HttpImageAssetProvider from '../../providers/HttpImageAssetProvider';
 
 type Props = {
     title: string,
     rotator: RotatorService;
+    provider: HttpImageAssetProvider;
 };
 
 export default class App extends React.Component<Props> {
@@ -35,7 +37,7 @@ export default class App extends React.Component<Props> {
                     </nav>
                     <Switch>
                         <Route path='/admin'>
-                            <Management />
+                            <Management provider={this.props.provider} />
                         </Route>
                         <Route path='/'>
                             <ImageAsset rotator={this.props.rotator} />

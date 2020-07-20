@@ -11,6 +11,11 @@ export default class AddressBuilder {
         return this;
     }
 
+    public imageAsset(id: string): AddressBuilder {
+        this._path = 'imageassets/' + id;
+        return this;
+    }
+
     public imageAssetContent(id: string): AddressBuilder {
         this._path = 'imageassets/' + id + '/content';
         return this;

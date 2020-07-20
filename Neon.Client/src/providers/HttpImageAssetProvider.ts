@@ -30,4 +30,11 @@ export default class HttpImageAssetProvider implements IImageAssetProvider {
         if (result.status === 200)
             return await result.blob();
     }
+
+    public async deleteOneAsync(id: string): Promise<ImageAsset> {
+        const request: Request = new Request(new AddressBuilder(this._baseUrl).imageAsset(id).getUrl());
+        const result: Response = await fetch(request, {method: 'DELETE'});
+        if (result.status === 200)
+            return await result.json();
+    }
 }

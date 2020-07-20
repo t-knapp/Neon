@@ -1,0 +1,70 @@
+import React, { ReactElement } from 'react';
+import ImageAsset from '../../models/ImageAsset';
+import HttpImageAssetProvider from '../../providers/HttpImageAssetProvider';
+
+type Props = {
+    provider: HttpImageAssetProvider;
+};
+type State = {
+    imageAssets: ImageAsset[];
+};
+
+export default class AssetList extends React.Component<Props, State> {
+    constructor(props: Props) {
+        super(props);
+        this.state = {
+            imageAssets: []
+        };
+    }
+
+    public componentDidMount(): void {
+        this._fetchList();
+    }
+
+    private async _fetchList(): Promise<void> {
+        try {
+            const assets: ImageAsset[] = await this.props.provider.allAsync();
+            this.setState({
+                imageAssets: assets
+            });
+        } catch {
+            this.setState({imageAssets: []});
+        }
+    }
+
+    private async _onDelete(id: string): Promise<void> {
+        try {
+            const deletedAsset: ImageAsset = await this.props.provider.deleteOneAsync(id);
+            const assets: ImageAsset[] = this.state.imageAssets.filter((asset: ImageAsset) => asset.id !== deletedAsset.id);
+            this.setState({imageAssets: assets});
+        } catch (ex) {
+            console.error('Exception deleting', id, ex);
+        }
+    }
+
+    public render(): ReactElement {
+        const rows: ReactElement[] = this.state.imageAssets.map((asset: ImageAsset) => (
+            <tr key={asset.id}>
+                <td>{asset.id}</td>
+                <td>{asset.name}</td>
+                <td>{asset.displayTime}</td>
+                <td><button type='button' onClick={() => this._onDelete(asset.id)} className='btn btn-primary btn-sm'>Löschen</button></td>
+            </tr>
+        ));
+        return (
+            <table className='table table-hover'>
+                <thead>
+                    <tr>
+                        <th scope='col'>#</th>
+                        <th scope='col'>Name</th>
+                        <th scope='col'>Anzeigedauer</th>
+                        <th scope='col'/>
+                    </tr>
+                </thead>
+                <tbody>
+                    {rows}
+                </tbody>
+            </table>
+        );
+    }
+}

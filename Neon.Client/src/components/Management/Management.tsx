@@ -1,7 +1,11 @@
 import React, { ReactElement, ChangeEvent, FormEvent } from 'react';
 import { boundMethod } from 'autobind-decorator';
+import AssetList from '../AssetList/AssetList';
+import HttpImageAssetProvider from '../../providers/HttpImageAssetProvider';
 
-type Props = { };
+type Props = {
+    provider: HttpImageAssetProvider;
+};
 type State = {
     name: string,
     displayTime: number,
@@ -29,49 +33,52 @@ export default class Management extends React.Component<Props, State> {
         return (
             <div className='ManagementComponent'>
                 <div className='container'>
-                <form onSubmit={this._onFormSubmit}>
-                    <div className='form-group row'>
-                        <label className='col-sm-4 col-form-label'>Name</label>
-                        <div className='col-sm-8'>
-                            <input type='text' className='form-control' value={this.state.name} onChange={this._onNameChanged} />
+                    <form onSubmit={this._onFormSubmit}>
+                        <div className='form-group row'>
+                            <label className='col-sm-4 col-form-label'>Name</label>
+                            <div className='col-sm-8'>
+                                <input type='text' className='form-control' value={this.state.name} onChange={this._onNameChanged} />
+                            </div>
                         </div>
-                    </div>
-                    <div className='form-group row'>
-                        <label className='col-sm-4 col-form-label'>Kontext</label>
-                        <div className='col-sm-8'>
-                            <input type='text' className='form-control' value={this.state.context} onChange={this._onContextChanged} readOnly={true} />
+                        <div className='form-group row'>
+                            <label className='col-sm-4 col-form-label'>Kontext</label>
+                            <div className='col-sm-8'>
+                                <input type='text' className='form-control' value={this.state.context} onChange={this._onContextChanged} readOnly={true} />
+                            </div>
                         </div>
-                    </div>
-                    <div className='form-group row'>
-                        <label className='col-sm-4 col-form-label'>Anzeigezeit (Sekunden)</label>
-                        <div className='col-sm-8'>
-                            <input type='number' min='5' max='300' step='1' className='form-control' value={this.state.displayTime} onChange={this._onDisplayTimeChanged} />
+                        <div className='form-group row'>
+                            <label className='col-sm-4 col-form-label'>Anzeigezeit (Sekunden)</label>
+                            <div className='col-sm-8'>
+                                <input type='number' min='5' max='300' step='1' className='form-control' value={this.state.displayTime} onChange={this._onDisplayTimeChanged} />
+                            </div>
                         </div>
-                    </div>
-                    <div className='form-group row'>
-                        <label className='col-sm-4 col-form-label'>Bilddatei</label>
-                        <div className='col-sm-8'>
-                            <input type='file' className='form-control' onChange={this._onFileChanged} />
+                        <div className='form-group row'>
+                            <label className='col-sm-4 col-form-label'>Bilddatei</label>
+                            <div className='col-sm-8'>
+                                <input type='file' className='form-control' onChange={this._onFileChanged} />
+                            </div>
                         </div>
-                    </div>
-                    <div className='form-group row'>
-                        <label className='col-sm-4 col-form-label'>Nicht anzeigen vor (optional)</label>
-                        <div className='col-sm-8'>
-                            <input type='date' className='form-control' value={this.state.notBefore} onChange={this._onNotBeforeChanged} />
+                        <div className='form-group row'>
+                            <label className='col-sm-4 col-form-label'>Nicht anzeigen vor (optional)</label>
+                            <div className='col-sm-8'>
+                                <input type='date' className='form-control' value={this.state.notBefore} onChange={this._onNotBeforeChanged} />
+                            </div>
                         </div>
-                    </div>
-                    <div className='form-group row'>
-                        <label className='col-sm-4 col-form-label'>Nicht anzeigen nach (optional)</label>
-                        <div className='col-sm-8'>
-                            <input type='date' className='form-control' value={this.state.notAfter} onChange={this._onNotAfterChanged} />
+                        <div className='form-group row'>
+                            <label className='col-sm-4 col-form-label'>Nicht anzeigen nach (optional)</label>
+                            <div className='col-sm-8'>
+                                <input type='date' className='form-control' value={this.state.notAfter} onChange={this._onNotAfterChanged} />
+                            </div>
                         </div>
-                    </div>
-                    <div className='form-group row'>
-                        <div className='col-sm-8'>
-                            <button type='submit' className='btn btn-primary'>Speichern</button>
+                        <div className='form-group row'>
+                            <div className='col-sm-8'>
+                                <button type='submit' className='btn btn-primary'>Speichern</button>
+                            </div>
                         </div>
-                    </div>
-                </form>
+                    </form>
+
+                    <AssetList provider={this.props.provider} />
+
                 </div>
             </div>
         );

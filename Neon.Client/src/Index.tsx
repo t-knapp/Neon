@@ -5,10 +5,11 @@ import App from './components/App/App';
 import RotatorService from './services/RotatorService';
 import HttpImageAssetProvider from './providers/HttpImageAssetProvider';
 
-const ROTATOR: RotatorService = new RotatorService(new HttpImageAssetProvider('https://localhost:5001/'));
+const PROVIDER: HttpImageAssetProvider = new HttpImageAssetProvider('https://localhost:5001/');
+const ROTATOR: RotatorService = new RotatorService(PROVIDER);
 ROTATOR.start();
 
 ReactDOM.render (
-    <App title='Neon.Client' rotator={ROTATOR} />,
+    <App title='Neon.Client' rotator={ROTATOR} provider={PROVIDER} />,
     document.getElementById('root')
 );
