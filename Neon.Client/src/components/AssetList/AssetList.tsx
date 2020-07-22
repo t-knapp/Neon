@@ -1,4 +1,5 @@
 import React, { ReactElement } from 'react';
+import moment from 'moment';
 import ImageAsset from '../../models/ImageAsset';
 import HttpImageAssetProvider from '../../providers/HttpImageAssetProvider';
 
@@ -48,6 +49,8 @@ export default class AssetList extends React.Component<Props, State> {
                 <td>{asset.id}</td>
                 <td>{asset.name}</td>
                 <td>{asset.displayTime}</td>
+                <td>{asset.notBefore ? moment.utc(asset.notBefore).format('DD.MM.YYYY') : ''}</td>
+                <td>{asset.notAfter ? moment.utc(asset.notAfter).format('DD.MM.YYYY') : ''}</td>
                 <td><button type='button' onClick={() => this._onDelete(asset.id)} className='btn btn-primary btn-sm'>Löschen</button></td>
             </tr>
         ));
@@ -58,6 +61,8 @@ export default class AssetList extends React.Component<Props, State> {
                         <th scope='col'>#</th>
                         <th scope='col'>Name</th>
                         <th scope='col'>Anzeigedauer</th>
+                        <th scope='col'>Nicht zeigen vor</th>
+                        <th scope='col'>Nicht zeigen nach</th>
                         <th scope='col'/>
                     </tr>
                 </thead>

@@ -2,6 +2,8 @@ import React, { ReactElement, ChangeEvent, FormEvent } from 'react';
 import { boundMethod } from 'autobind-decorator';
 import AssetList from '../AssetList/AssetList';
 import HttpImageAssetProvider from '../../providers/HttpImageAssetProvider';
+import IAddImageAssetResource from '../../models/IAddImageAssetResource';
+import ImageAsset from '../../models/ImageAsset';
 
 type Props = {
     provider: HttpImageAssetProvider;
@@ -15,18 +17,20 @@ type State = {
     notAfter: string
 };
 
+const DEFAULT_STATE: State = {
+    name: '',
+    displayTime: 10,
+    context: 'Default',
+    file: undefined,
+    notBefore: '',
+    notAfter: ''
+};
+
 export default class Management extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props);
-        this.state = {
-            name: '',
-            displayTime: 10,
-            context: 'Default',
-            file: null,
-            notBefore: null,
-            notAfter: null
-        };
+        this.state = DEFAULT_STATE;
     }
 
     public render(): ReactElement {
@@ -115,24 +119,20 @@ export default class Management extends React.Component<Props, State> {
     }
 
     @boundMethod
-    private _onFormSubmit(event: FormEvent<HTMLElement>): void {
+    private async _onFormSubmit(event: FormEvent<HTMLElement>): Promise<void> {
         event.preventDefault();
-
-        // TODO: Move to service
-        const formData: FormData = new FormData();
-        formData.append('Name', this.state.name);
-        formData.append('ContextName', this.state.context);
-        formData.append('DisplayTime', this.state.displayTime.toString());
-        formData.append('Image', this.state.file);
-        if (this.state.notBefore)
-            formData.append('NotBefore', this.state.notBefore);
-
-        if (this.state.notAfter)
-            formData.append('NotAfter', this.state.notAfter);
-
-        fetch('https://localhost:5001/imageassets', {
-            method: 'POST',
-            body: formData
-        });
+        try {
+            await this.props.provider.addOneAsync({
+                name: this.state.name,
+                contextName: this.state.context,
+                displayTime: this.state.displayTime,
+                image: this.state.file,
+                notBefore: this.state.notBefore,
+                notAfter: this.state.notAfter
+            });
+            this.setState(DEFAULT_STATE);
+        } catch (ex) {
+            console.error('Add error', ex);
+        }
     }
 }
