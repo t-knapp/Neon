@@ -2,8 +2,6 @@ import React, { ReactElement, ChangeEvent, FormEvent } from 'react';
 import { boundMethod } from 'autobind-decorator';
 import AssetList from '../AssetList/AssetList';
 import HttpImageAssetProvider from '../../providers/HttpImageAssetProvider';
-import IAddImageAssetResource from '../../models/IAddImageAssetResource';
-import ImageAsset from '../../models/ImageAsset';
 
 type Props = {
     provider: HttpImageAssetProvider;
