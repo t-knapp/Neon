@@ -7,6 +7,7 @@ import { reaction, IReactionDisposer } from 'mobx';
 
 type Props = {
     rotator: RotatorService;
+    onClick: () => void;
 };
 
 @observer
@@ -34,7 +35,7 @@ export default class ImageAsset extends React.Component<Props> {
         const imageUrl: string = this.props.rotator.currentImage ? URL.createObjectURL(this.props.rotator.currentImage) : '';
         this._lastUrl = imageUrl;
         return (
-            <div className='ImageAssetComponent'>
+            <div className='ImageAssetComponent' onClick={this.props.onClick}>
                 <img src={imageUrl} />
             </div>
         );

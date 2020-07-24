@@ -4,15 +4,17 @@ import {
     BrowserRouter as Router,
     Switch,
     Route,
-    Link
+    useHistory
   } from 'react-router-dom';
 import './App.less';
 import ImageAsset from '../ImageAsset/ImageAsset';
 import RotatorService from '../../services/RotatorService';
-import Management from '../Management/Management';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import HttpImageAssetProvider from '../../providers/HttpImageAssetProvider';
+import AssetList from '../AssetList/AssetList';
+import AddAsset from '../AddAsset/AddAsset';
+import Menu from '../Menu/Menu';
 
 type Props = {
     title: string,
@@ -25,26 +27,42 @@ export default class App extends React.Component<Props> {
         return (
             <Router>
                 <div className='AppComponent'>
-                    <nav>
-                        <ul>
-                            <li>
-                                <Link to='/'>Home</Link>
-                            </li>
-                            <li>
-                                <Link to='/admin'>Verwaltung</Link>
-                            </li>
-                        </ul>
-                    </nav>
-                    <Switch>
-                        <Route path='/admin'>
-                            <Management provider={this.props.provider} />
-                        </Route>
-                        <Route path='/'>
-                            <ImageAsset rotator={this.props.rotator} />
-                        </Route>
-                    </Switch>
+                    <div className='container'>
+                        <Switch>
+                            <Route path='/assets'>
+                                <Menu>
+                                    <AssetList provider={this.props.provider} />
+                                </Menu>
+                            </Route>
+                            <Route path='/add'>
+                                <Menu>
+                                    <AddAsset provider={this.props.provider} />
+                                </Menu>
+                            </Route>
+                            <Route path='/'>
+                                <ImageAssetWrapper rotator={this.props.rotator} />
+                            </Route>
+                        </Switch>
+                    </div>
                 </div>
             </Router>
         );
     }
+}
+
+type WrapperProps = {
+    rotator: RotatorService
+};
+function ImageAssetWrapper(props: WrapperProps): ReactElement {
+    const history = useHistory();
+
+    const onClick: () => void = () => {
+        history.push('/assets');
+    };
+
+    return (
+        <React.Fragment>
+            <ImageAsset rotator={props.rotator} onClick={onClick} />
+        </React.Fragment>
+    );
 }
