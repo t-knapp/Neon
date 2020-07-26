@@ -24,7 +24,7 @@ export default class RotatorService {
     @action
     private async _rotate(): Promise<void> {
         try {
-            const assetList: ImageAsset[] = await this._provider.allAsync();
+            const assetList: ImageAsset[] = (await this._provider.allAsync()).filter((a) => a.isActive);
             this._index = (this._index + 1) >= assetList.length ? 0 : this._index + 1;
             const asset: ImageAsset = assetList[this._index];
             this.currentImage = await this._provider.oneContentAsync(asset.id);

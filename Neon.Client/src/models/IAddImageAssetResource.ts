@@ -1,7 +1,8 @@
 export default interface IAddImageAssetResource {
     name: string;
     image: File;
-    contextName: string;
+    isActive: boolean;
+    order: number;
     displayTime: number;
     notBefore: string;
     notAfter: string;

@@ -2,6 +2,7 @@ import ImageAsset from '../models/ImageAsset';
 import IImageAssetProvider from './IImageAssetProvider';
 import AddressBuilder from '../services/AddressBuilder';
 import IAddImageAssetResource from '../models/IAddImageAssetResource';
+import IUpdateImageAssetResource from '../models/IUpdateImageAssetResource';
 
 export default class HttpImageAssetProvider implements IImageAssetProvider {
     private _baseUrl: string;
@@ -42,7 +43,8 @@ export default class HttpImageAssetProvider implements IImageAssetProvider {
     public async addOneAsync(asset: IAddImageAssetResource): Promise<ImageAsset> {
         const formData: FormData = new FormData();
         formData.append('Name', asset.name);
-        formData.append('ContextName', asset.contextName);
+        formData.append('Order', asset.order.toString());
+        formData.append('IsActive', asset.isActive ? 'true' : 'false');
         formData.append('DisplayTime', asset.displayTime.toString());
         formData.append('Image', asset.image);
         if (asset.notBefore)
@@ -55,6 +57,21 @@ export default class HttpImageAssetProvider implements IImageAssetProvider {
             {
                 method: 'POST',
                 body: formData
+            }
+        );
+        if (result.status === 200)
+            return await result.json();
+    }
+
+    public async updateOneAsync(asset: IUpdateImageAssetResource): Promise<ImageAsset> {
+        const result: Response = await fetch(
+            new AddressBuilder(this._baseUrl).imageAssetAll().getUrl(),
+            {
+                method: 'PATCH',
+                body: JSON.stringify(asset),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             }
         );
         if (result.status === 200)

@@ -18,17 +18,19 @@ namespace Neon.Server.Commands
 
             public string Name { get; }
             public EAssetType Type { get; } = EAssetType.Image;
-            public string ContextName { get; }
             public Stream Content { get; }
             public string ContentType { get; }
             public int DisplayTime { get; }
+            public bool IsActive { get; }
+            public int Order { get; }
             public DateTime? NotBefore { get; set; }
             public DateTime? NotAfter { get; set; }
 
-            public Input(string name, string contextName, int displayTime, Stream content, string contentType, DateTime? notBefore, DateTime? notAfter) {
+            public Input(string name, int displayTime, bool isActive, int order, Stream content, string contentType, DateTime? notBefore, DateTime? notAfter) {
                 Name = name ?? throw new ArgumentNullException(nameof(name));
-                ContextName = contextName ?? throw new ArgumentNullException(nameof(contextName));
                 DisplayTime = displayTime;
+                IsActive = isActive;
+                Order = order;
                 Content = content ?? throw new ArgumentNullException(nameof(content));
                 ContentType = contentType;
                 NotBefore = notBefore;
@@ -46,7 +48,7 @@ namespace Neon.Server.Commands
         }
 
         public async Task<ImageAsset> Handle(Input request, CancellationToken cancellationToken) {
-            var asset = new ImageAsset(request.Name, new AssetContext(request.ContextName), request.DisplayTime, request.ContentType, request.NotBefore, request.NotAfter);
+            var asset = new ImageAsset(request.Name, request.DisplayTime, request.IsActive, request.Order, request.ContentType, request.NotBefore, request.NotAfter);
             await _assetCollection.InsertOneAsync(asset, null, cancellationToken);
             await asset.Data.UploadAsync(Resize(request.Content));
             request.Content.Close();

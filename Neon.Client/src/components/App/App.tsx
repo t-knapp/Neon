@@ -27,7 +27,7 @@ export default class App extends React.Component<Props> {
         return (
             <Router>
                 <div className='AppComponent'>
-                    <div className='container'>
+                    <div className='container-fluid'>
                         <Switch>
                             <Route path='/assets'>
                                 <Menu>

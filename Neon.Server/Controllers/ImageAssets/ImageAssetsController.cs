@@ -77,8 +77,9 @@ namespace Neon.Server.Controllers {
                 stream = addResource.Image.OpenReadStream(); // TODO: Where and when is the stream closed?
                 var command = new AddImageAssetCommand.Input(
                     addResource.Name,
-                    addResource.ContextName,
                     addResource.DisplayTime,
+                    addResource.IsActive,
+                    addResource.Order,
                     stream,
                     addResource.Image.ContentType,
                     addResource.NotBefore,
@@ -92,6 +93,26 @@ namespace Neon.Server.Controllers {
             } finally {
                 if (stream != null)
                     stream.Close();
+            }
+        }
+
+        [HttpPatch]
+        public async Task<ActionResult<ImageAssetResource>> Update(UpdateImageAssetResource updateResource) {
+            try {
+                var command = new UpdateImageAssetCommand.Input(
+                    updateResource.Id,
+                    updateResource.Name,
+                    updateResource.DisplayTime,
+                    updateResource.IsActive,
+                    updateResource.Order,
+                    updateResource.NotBefore,
+                    updateResource.NotAfter
+                );
+                var result = await _mediator.Send(command);
+                return Ok(_mapper.Map<ImageAssetResource>(result));
+            } catch (Exception ex) {
+                _logger.LogError(ex, $"Cannot update image asset '{updateResource.Id}'.");
+                return null;
             }
         }
 

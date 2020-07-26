@@ -117,7 +117,8 @@ export default class AddAsset extends React.Component<Props, State> {
         try {
             await this.props.provider.addOneAsync({
                 name: this.state.name,
-                contextName: this.state.context,
+                isActive: true,
+                order: Math.round(Date.now() / 1000),
                 displayTime: this.state.displayTime,
                 image: this.state.file,
                 notBefore: this.state.notBefore,

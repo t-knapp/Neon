@@ -43,6 +43,15 @@ export default class AssetList extends React.Component<Props, State> {
         }
     }
 
+    private async _onSetActive(id: string, state: boolean): Promise<void> {
+        try {
+            await this.props.provider.updateOneAsync({id, isActive: state});
+            await this._fetchList();
+        } catch (ex) {
+            console.error('Exception patching', id, ex);
+        }
+    }
+
     public render(): ReactElement {
         const rows: ReactElement[] = this.state.imageAssets.map((asset: ImageAsset) => (
             <tr key={asset.id}>
@@ -51,7 +60,11 @@ export default class AssetList extends React.Component<Props, State> {
                 <td>{asset.displayTime}</td>
                 <td>{asset.notBefore ? moment.utc(asset.notBefore).format('DD.MM.YYYY') : ''}</td>
                 <td>{asset.notAfter ? moment.utc(asset.notAfter).format('DD.MM.YYYY') : ''}</td>
-                <td><button type='button' onClick={() => this._onDelete(asset.id)} className='btn btn-primary btn-sm'>Löschen</button></td>
+                <td>{asset.isActive ? <span className='badge badge-primary'>Aktiv</span> : <span className='badge badge-secondary'>Inaktiv</span>}</td>
+                <td>
+                    <button type='button' onClick={() => this._onSetActive(asset.id, !(!!asset.isActive))} className='btn btn-primary btn-sm'>{asset.isActive ? 'Deaktivieren' : 'Aktivieren'}</button>
+                    <button type='button' onClick={() => this._onDelete(asset.id)} className='btn btn-danger btn-sm'>Löschen</button>
+                </td>
             </tr>
         ));
         return (
@@ -63,6 +76,7 @@ export default class AssetList extends React.Component<Props, State> {
                         <th scope='col'>Anzeigedauer</th>
                         <th scope='col'>Nicht zeigen vor</th>
                         <th scope='col'>Nicht zeigen nach</th>
+                        <th scope='col'>Status</th>
                         <th scope='col'/>
                     </tr>
                 </thead>
