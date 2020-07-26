@@ -24,13 +24,21 @@ export default class AssetList extends React.Component<Props, State> {
 
     private async _fetchList(): Promise<void> {
         try {
-            const assets: ImageAsset[] = await this.props.provider.allAsync();
+            const assets: ImageAsset[] = (await this.props.provider.allAsync()).sort(this._sort);
             this.setState({
                 imageAssets: assets
             });
         } catch {
             this.setState({imageAssets: []});
         }
+    }
+
+    private _sort(a: ImageAsset, b: ImageAsset): number {
+        if (a.order < b.order)
+            return -1;
+        if (a.order > b.order)
+            return 1;
+        return 0;
     }
 
     private async _onDelete(id: string): Promise<void> {
@@ -43,27 +51,46 @@ export default class AssetList extends React.Component<Props, State> {
         }
     }
 
-    private async _onSetActive(id: string, state: boolean): Promise<void> {
+    private async _onSetActive(id: string, isActive: boolean): Promise<void> {
         try {
-            await this.props.provider.updateOneAsync({id, isActive: state});
+            await this.props.provider.updateOneAsync({id, isActive});
             await this._fetchList();
         } catch (ex) {
-            console.error('Exception patching', id, ex);
+            console.error('Exception while setting state', id, ex);
+        }
+    }
+
+    private async _onSetOrder(id: string, order: number): Promise<void> {
+        try {
+            await this.props.provider.updateOneAsync({id, order});
+            await this._fetchList();
+        } catch (ex) {
+            console.error('Exception while setting order', id, order);
         }
     }
 
     public render(): ReactElement {
         const rows: ReactElement[] = this.state.imageAssets.map((asset: ImageAsset) => (
             <tr key={asset.id}>
-                <td>{asset.id}</td>
-                <td>{asset.name}</td>
+                <td>
+                    <button type='button' onClick={() => this._onSetOrder(asset.id, asset.order - 1)} className='btn btn-outline-primary btn-sm'><i className='fas fa-arrow-up'></i></button>
+                    &nbsp;
+                    <button type='button' onClick={() => this._onSetOrder(asset.id, asset.order + 1)} className='btn btn-outline-primary btn-sm'><i className='fas fa-arrow-down'></i></button>
+                    &nbsp;
+                    {asset.name}
+                    &nbsp;
+                    {asset.order}
+                </td>
                 <td>{asset.displayTime}</td>
                 <td>{asset.notBefore ? moment.utc(asset.notBefore).format('DD.MM.YYYY') : ''}</td>
                 <td>{asset.notAfter ? moment.utc(asset.notAfter).format('DD.MM.YYYY') : ''}</td>
                 <td>{asset.isActive ? <span className='badge badge-primary'>Aktiv</span> : <span className='badge badge-secondary'>Inaktiv</span>}</td>
                 <td>
-                    <button type='button' onClick={() => this._onSetActive(asset.id, !(!!asset.isActive))} className='btn btn-primary btn-sm'>{asset.isActive ? 'Deaktivieren' : 'Aktivieren'}</button>
-                    <button type='button' onClick={() => this._onDelete(asset.id)} className='btn btn-danger btn-sm'>Löschen</button>
+                    <button type='button' onClick={() => this._onSetActive(asset.id, !asset.isActive)} className='btn btn-outline-primary btn-sm'>
+                        {asset.isActive ? 'Aus' : 'Ein'}
+                    </button>
+                    &nbsp;
+                    <button type='button' onClick={() => this._onDelete(asset.id)} className='btn btn-outline-danger btn-sm'><i className='fas fa-trash-alt'></i></button>
                 </td>
             </tr>
         ));
@@ -71,7 +98,6 @@ export default class AssetList extends React.Component<Props, State> {
             <table className='table table-hover'>
                 <thead>
                     <tr>
-                        <th scope='col'>#</th>
                         <th scope='col'>Name</th>
                         <th scope='col'>Anzeigedauer</th>
                         <th scope='col'>Nicht zeigen vor</th>
