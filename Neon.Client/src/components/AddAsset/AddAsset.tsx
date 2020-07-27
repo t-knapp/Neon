@@ -42,12 +42,6 @@ export default class AddAsset extends React.Component<Props, State> {
                         </div>
                     </div>
                     <div className='form-group row'>
-                        <label className='col-sm-4 col-form-label'>Kontext</label>
-                        <div className='col-sm-8'>
-                            <input type='text' className='form-control' value={this.state.context} onChange={this._onContextChanged} readOnly={true} />
-                        </div>
-                    </div>
-                    <div className='form-group row'>
                         <label className='col-sm-4 col-form-label'>Anzeigezeit (Sekunden)</label>
                         <div className='col-sm-8'>
                             <input type='number' min='5' max='300' step='1' className='form-control' value={this.state.displayTime} onChange={this._onDisplayTimeChanged} />
@@ -89,11 +83,6 @@ export default class AddAsset extends React.Component<Props, State> {
     @boundMethod
     private _onDisplayTimeChanged(event: ChangeEvent<HTMLInputElement>): void {
         this.setState({displayTime: parseInt(event.target.value, 10)});
-    }
-
-    @boundMethod
-    private _onContextChanged(event: ChangeEvent<HTMLInputElement>): void {
-        this.setState({context: event.target.value});
     }
 
     @boundMethod

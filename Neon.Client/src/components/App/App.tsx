@@ -15,6 +15,7 @@ import HttpImageAssetProvider from '../../providers/HttpImageAssetProvider';
 import AssetList from '../AssetList/AssetList';
 import AddAsset from '../AddAsset/AddAsset';
 import Menu from '../Menu/Menu';
+import EditAsset from '../EditAsset/EditAsset';
 
 type Props = {
     title: string,
@@ -37,6 +38,11 @@ export default class App extends React.Component<Props> {
                             <Route path='/add'>
                                 <Menu>
                                     <AddAsset provider={this.props.provider} />
+                                </Menu>
+                            </Route>
+                            <Route path='/edit/:id'>
+                                <Menu>
+                                    <EditAsset provider={this.props.provider} />
                                 </Menu>
                             </Route>
                             <Route path='/'>

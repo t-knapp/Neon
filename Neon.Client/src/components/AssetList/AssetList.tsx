@@ -2,6 +2,7 @@ import React, { ReactElement } from 'react';
 import moment from 'moment';
 import ImageAsset from '../../models/ImageAsset';
 import HttpImageAssetProvider from '../../providers/HttpImageAssetProvider';
+import { NavLink } from 'react-router-dom';
 
 type Props = {
     provider: HttpImageAssetProvider;
@@ -11,6 +12,7 @@ type State = {
 };
 
 export default class AssetList extends React.Component<Props, State> {
+
     constructor(props: Props) {
         super(props);
         this.state = {
@@ -69,6 +71,10 @@ export default class AssetList extends React.Component<Props, State> {
         }
     }
 
+    private _onEdit(id: string): void {
+        
+    }
+
     public render(): ReactElement {
         const rows: ReactElement[] = this.state.imageAssets.map((asset: ImageAsset, index: number) => {
             const beforeOrder: number = ((this.state.imageAssets[index - 1]?.order) ?? asset.order) - 1;
@@ -90,6 +96,8 @@ export default class AssetList extends React.Component<Props, State> {
                         <button type='button' onClick={() => this._onSetActive(asset.id, !asset.isActive)} className='btn btn-outline-primary btn-sm'>
                             {asset.isActive ? 'Aus' : 'Ein'}
                         </button>
+                        &nbsp;
+                        <NavLink className='btn btn-outline-primary btn-sm' to={'/edit/' + asset.id}><i className='fas fa-edit'/></NavLink>
                         &nbsp;
                         <button type='button' onClick={() => this._onDelete(asset.id)} className='btn btn-outline-danger btn-sm'><i className='fas fa-trash-alt'/></button>
                     </td>
