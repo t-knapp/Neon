@@ -1,3 +1,4 @@
+import { Operation } from 'fast-json-patch';
 import ImageAsset from '../models/ImageAsset';
 import IImageAssetProvider from './IImageAssetProvider';
 import AddressBuilder from '../services/AddressBuilder';
@@ -66,14 +67,14 @@ export default class HttpImageAssetProvider implements IImageAssetProvider {
             return await result.json();
     }
 
-    public async updateOneAsync(asset: IUpdateImageAssetResource): Promise<ImageAsset> {
+    public async updateOneAsync(id: string, operations: Operation[]): Promise<ImageAsset> {
         const result: Response = await fetch(
-            new AddressBuilder(this._baseUrl).imageAssetAll().getUrl(),
+            new AddressBuilder(this._baseUrl).imageAsset(id).getUrl(),
             {
                 method: 'PATCH',
-                body: JSON.stringify(asset),
+                body: JSON.stringify(operations),
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json-patch+json'
                 }
             }
         );

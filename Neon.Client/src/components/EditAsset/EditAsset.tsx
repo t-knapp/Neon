@@ -1,7 +1,10 @@
 import React, { FunctionComponent, useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import { useParams, Redirect } from 'react-router-dom';
+import moment from 'moment';
+import { compare } from 'fast-json-patch';
 import HttpImageAssetProvider from '../../providers/HttpImageAssetProvider';
 import ImageAsset from '../../models/ImageAsset';
+import IUpdateImageAssetResource from '../../models/IUpdateImageAssetResource';
 
 type Props = {
     provider: HttpImageAssetProvider
@@ -15,24 +18,35 @@ const EditAsset: FunctionComponent<Props> = ({provider}) => {
         displayTime: 0,
         notBefore: '',
         notAfter: '',
-        done: false
+        done: false,
+        originalAsset: null
     });
 
     useEffect(() => {
         provider.oneAsync(id).then((asset: ImageAsset) => {
-            setState((prevState) => ({...prevState, name: asset.name, displayTime: asset.displayTime, notBefore: asset.notBefore || '', notAfter: asset.notAfter || ''}));
+            setState((prevState) => ({
+                ...prevState,
+                originalAsset: asset,
+                name: asset.name,
+                displayTime: asset.displayTime,
+                notBefore: asset.notBefore ? moment.utc(asset.notBefore).format('YYYY-MM-DD') : '',
+                notAfter: asset.notAfter ? moment.utc(asset.notBefore).format('YYYY-MM-DD') : ''
+            }));
         });
     }, []);
 
     const onFormSubmit = async (event: FormEvent<HTMLElement>): Promise<void> => {
         event.preventDefault();
-        await provider.updateOneAsync({
-            id,
+        const newAsset: IUpdateImageAssetResource = {
+            id: id,
             name: state.name,
             displayTime: state.displayTime,
-            notBefore: state.notBefore ? state.notBefore : null,
-            notAfter: state.notAfter ? state.notAfter : null
-        });
+            notBefore: state.notBefore,
+            notAfter: state.notAfter,
+            isActive: state.originalAsset.isActive,
+            order: state.originalAsset.order,
+        };
+        await provider.updateOneAsync(id, compare(state.originalAsset, newAsset));
         setState((prevState) => ({...prevState, done: true}));
     };
 

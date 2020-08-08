@@ -55,7 +55,7 @@ export default class AssetList extends React.Component<Props, State> {
 
     private async _onSetActive(id: string, isActive: boolean): Promise<void> {
         try {
-            await this.props.provider.updateOneAsync({id, isActive});
+            await this.props.provider.updateOneAsync(id, [{op: 'replace', path: 'isActive', value: isActive}]);
             await this._fetchList();
         } catch (ex) {
             console.error('Exception while setting state', id, ex);
@@ -64,7 +64,7 @@ export default class AssetList extends React.Component<Props, State> {
 
     private async _onSetOrder(id: string, order: number): Promise<void> {
         try {
-            await this.props.provider.updateOneAsync({id, order});
+            await this.props.provider.updateOneAsync(id, [{op: 'replace', path: 'order', value: order}]);
             await this._fetchList();
         } catch (ex) {
             console.error('Exception while setting order', id, order);

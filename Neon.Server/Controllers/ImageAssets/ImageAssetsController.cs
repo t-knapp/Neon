@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.IO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.JsonPatch;
 using AutoMapper;
 using MediatR;
 using Neon.Server.Models;
@@ -97,21 +98,14 @@ namespace Neon.Server.Controllers {
         }
 
         [HttpPatch]
-        public async Task<ActionResult<ImageAssetResource>> Update(UpdateImageAssetResource updateResource) {
+        [Route("{id}")]
+        public async Task<ActionResult<ImageAssetResource>> Update(string id, [FromBody] JsonPatchDocument<UpdateImageAssetResource> patch) {
             try {
-                var command = new UpdateImageAssetCommand.Input(
-                    updateResource.Id,
-                    updateResource.Name,
-                    updateResource.DisplayTime,
-                    updateResource.IsActive,
-                    updateResource.Order,
-                    updateResource.NotBefore,
-                    updateResource.NotAfter
-                );
+                var command = new UpdateImageAssetCommand.Input(id, _mapper.Map<JsonPatchDocument<ImageAsset>>(patch));
                 var result = await _mediator.Send(command);
                 return Ok(_mapper.Map<ImageAssetResource>(result));
             } catch (Exception ex) {
-                _logger.LogError(ex, $"Cannot update image asset '{updateResource.Id}'.");
+                _logger.LogError(ex, $"Cannot update image asset '{id}'.");
                 return null;
             }
         }

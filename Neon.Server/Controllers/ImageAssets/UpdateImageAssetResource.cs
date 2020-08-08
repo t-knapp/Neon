@@ -1,7 +1,6 @@
 using System;
 namespace Neon.Server.Controllers {
     public class UpdateImageAssetResource {
-        public string Id { get; set; }
         public string Name { get; set; }
         public int? DisplayTime { get; set; }
         public bool? IsActive { get; set; }
