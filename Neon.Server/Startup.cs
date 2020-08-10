@@ -32,8 +32,8 @@ namespace Neon.Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddOptions();
-            services.AddOptions<MongoDbOptions>().Bind(Configuration.GetSection("MongoDb"));
-            services.AddOptions<ImageOptions>().Bind(Configuration.GetSection("Images"));
+            services.AddOptions<MongoDbOptions>().Bind(Configuration.GetSection(MongoDbOptions.IDENTIFIER));
+            services.AddOptions<ImageOptions>().Bind(Configuration.GetSection(ImageOptions.IDENTIFIER));
 
             services
                 .AddSingleton<DB>( s => {
