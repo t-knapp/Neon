@@ -71,10 +71,6 @@ export default class AssetList extends React.Component<Props, State> {
         }
     }
 
-    private _onEdit(id: string): void {
-        
-    }
-
     public render(): ReactElement {
         const rows: ReactElement[] = this.state.imageAssets.map((asset: ImageAsset, index: number) => {
             const beforeOrder: number = ((this.state.imageAssets[index - 1]?.order) ?? asset.order) - 1;
@@ -85,9 +81,8 @@ export default class AssetList extends React.Component<Props, State> {
                         <button type='button' onClick={() => this._onSetOrder(asset.id, beforeOrder)} className='btn btn-outline-primary btn-sm' disabled={index === 0}><i className='fas fa-arrow-up'/></button>
                         &nbsp;
                         <button type='button' onClick={() => this._onSetOrder(asset.id, afterOrder)} className='btn btn-outline-primary btn-sm' disabled={index === this.state.imageAssets.length - 1}><i className='fas fa-arrow-down'/></button>
-                        &nbsp;
-                        {asset.name}
                     </td>
+                    <td>{asset.name}</td>
                     <td>{asset.displayTime}</td>
                     <td>{asset.notBefore ? moment.utc(asset.notBefore).format('DD.MM.YYYY') : ''}</td>
                     <td>{asset.notAfter ? moment.utc(asset.notAfter).format('DD.MM.YYYY') : ''}</td>
@@ -108,6 +103,7 @@ export default class AssetList extends React.Component<Props, State> {
             <table className='table table-hover'>
                 <thead>
                     <tr>
+                        <th scope='col'>Position</th>
                         <th scope='col'>Name</th>
                         <th scope='col'>Anzeigedauer</th>
                         <th scope='col'>Nicht zeigen vor</th>
