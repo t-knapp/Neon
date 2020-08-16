@@ -24,11 +24,14 @@ export default class ImageAsset extends React.Component<Props> {
                     URL.revokeObjectURL(this._lastUrl);
             }
         );
+        this.props.rotator.start();
     }
 
     public componentWillUnmount(): void {
         if (this._disposer)
             this._disposer();
+        
+        this.props.rotator.stop();
     }
 
     public render(): ReactElement {
