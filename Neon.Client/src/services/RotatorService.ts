@@ -32,7 +32,9 @@ export default class RotatorService {
     private async _rotate(): Promise<void> {
         while(this._running) {
             try {
-                const assetList: ImageAsset[] = (await this._provider.allAsync()).filter(this.filter);
+                const assetList: ImageAsset[] = (await this._provider.allAsync())
+                    .filter(this.filter)
+                    .sort(this.sort);
                 this._index = (this._index + 1) >= assetList.length ? 0 : this._index + 1;
                 const asset: ImageAsset = assetList[this._index];
                 this.currentImage = await this._provider.oneContentAsync(asset.id);
@@ -49,5 +51,13 @@ export default class RotatorService {
         return asset.isActive
             && asset.notBefore ? (moment.utc(asset.notBefore).isSameOrBefore(now, 'day')) : true
             && asset.notAfter ? (moment.utc(asset.notAfter).isSameOrAfter(now, 'day')) : true;
+    }
+
+    private sort(lhs: ImageAsset, rhs: ImageAsset): number {
+        if (lhs.order < rhs.order)
+            return -1;
+        if (lhs.order > rhs.order)
+            return 1;
+        return 0;
     }
 }

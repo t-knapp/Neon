@@ -12,7 +12,6 @@ import HttpImageAssetProvider from './providers/HttpImageAssetProvider';
 
 const PROVIDER: HttpImageAssetProvider = new HttpImageAssetProvider('https://localhost:5001/');
 const ROTATOR: RotatorService = new RotatorService(PROVIDER);
-ROTATOR.start();
 
 ReactDOM.render (
     <App title='Neon.Client' rotator={ROTATOR} provider={PROVIDER} />,
