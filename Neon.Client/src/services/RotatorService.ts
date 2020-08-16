@@ -45,8 +45,9 @@ export default class RotatorService {
     }
 
     private filter(asset: ImageAsset): boolean {
+        const now: moment.Moment = moment();
         return asset.isActive
-            && asset.notBefore ? (moment.utc(asset.notBefore).isBefore(moment())) : true
-            && asset.notAfter ? (moment.utc(asset.notAfter).isAfter(moment())) : true;
+            && asset.notBefore ? (moment.utc(asset.notBefore).isSameOrBefore(now, 'day')) : true
+            && asset.notAfter ? (moment.utc(asset.notAfter).isSameOrAfter(now, 'day')) : true;
     }
 }

@@ -30,7 +30,7 @@ export default class ImageAsset extends React.Component<Props> {
     public componentWillUnmount(): void {
         if (this._disposer)
             this._disposer();
-        
+
         this.props.rotator.stop();
     }
 
