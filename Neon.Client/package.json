@@ -1,7 +1,7 @@
 {
-  "name": "webapp-quickstart",
+  "name": "Neon.Client",
   "version": "0.1.0",
-  "description": "WebApp Quickstart",
+  "description": "Digital signage client for Neon.Server",
   "private": true,
   "scripts": {
     "start": "webpack-dev-server --open --config webpack.start.js",
@@ -106,6 +106,7 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.14.0",
+    "async-mutex": "^0.2.4",
     "bootstrap": "^4.5.0",
     "fast-json-patch": "^3.0.0-1",
     "mobx": "^5.15.4",
