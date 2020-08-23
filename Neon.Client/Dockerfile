@@ -26,4 +26,4 @@ WORKDIR /root/
 
 COPY --from=builder /usr/src/app/dist .
 
-CMD ["ls", "al"]
+CMD ["ls", "-al"]
