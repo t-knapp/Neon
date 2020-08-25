@@ -1,0 +1,32 @@
+version: '3.1'
+
+services:
+
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - 27018:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: 31ecac7b103c4f4382630502e0b2390e
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8011:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: 31ecac7b103c4f4382630502e0b2390e
+   
+  neon-server:
+    image: neon:latest
+    restart: always
+    ports:
+      - 8010:80
+    environment:
+      MongoDb__Hostname: mongo
+      MongoDb__Username: root
+      MongoDb__Password: 31ecac7b103c4f4382630502e0b2390e
+      ASPNETCORE_URLS: "http://+:80"
