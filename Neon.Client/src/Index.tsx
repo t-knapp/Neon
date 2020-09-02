@@ -10,7 +10,7 @@ import App from './components/App/App';
 import RotatorService from './services/RotatorService';
 import HttpImageAssetProvider from './providers/HttpImageAssetProvider';
 
-const PROVIDER: HttpImageAssetProvider = new HttpImageAssetProvider('');
+const PROVIDER: HttpImageAssetProvider = new HttpImageAssetProvider('http://localhost:5000/');
 const ROTATOR: RotatorService = new RotatorService(PROVIDER);
 
 ReactDOM.render (

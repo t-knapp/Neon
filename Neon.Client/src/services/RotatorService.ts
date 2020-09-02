@@ -28,9 +28,9 @@ export default class RotatorService {
         this._running = false;
     }
 
-    async blobToBase64(blob: Blob): Promise<string> {
+    private async _blobToBase64(blob: Blob): Promise<string> {
         return new Promise((resolve, reject) => {
-            let reader = new FileReader();
+            const reader: FileReader = new FileReader();
             reader.onloadend = () => {
                 resolve(reader.result as string);
             };
@@ -44,11 +44,11 @@ export default class RotatorService {
 
     @action
     private async _rotate(): Promise<void> {
-        while(this._running) {
+        while (this._running) {
             try {
                 const assetList: ImageAsset[] = (await this._provider.allAsync())
-                    .filter(this.filter)
-                    .sort(this.sort);
+                    .filter(this._filter)
+                    .sort(this._sort);
                 if (assetList.length === 0) {
                     this.currentImage = null;
                     await new Promise((resolve) => window.setTimeout(resolve, 5000));
@@ -56,7 +56,7 @@ export default class RotatorService {
                 }
                 this._index = (this._index + 1) >= assetList.length ? 0 : this._index + 1;
                 const asset: ImageAsset = assetList[this._index];
-                this.currentImage = await this.blobToBase64(await this._provider.oneContentAsync(asset.id));
+                this.currentImage = await this._blobToBase64(await this._provider.oneContentAsync(asset.id));
                 await new Promise((resolve) => window.setTimeout(resolve, asset.displayTime * 1000));
             } catch (ex) {
                 console.warn('Error while rotating:', ex);
@@ -66,14 +66,14 @@ export default class RotatorService {
         }
     }
 
-    private filter(asset: ImageAsset): boolean {
+    private _filter(asset: ImageAsset): boolean {
         const now: moment.Moment = moment();
         return asset.isActive
             && asset.notBefore ? (moment.utc(asset.notBefore).isSameOrBefore(now, 'day')) : true
             && asset.notAfter ? (moment.utc(asset.notAfter).isSameOrAfter(now, 'day')) : true;
     }
 
-    private sort(lhs: ImageAsset, rhs: ImageAsset): number {
+    private _sort(lhs: ImageAsset, rhs: ImageAsset): number {
         if (lhs.order < rhs.order)
             return -1;
         if (lhs.order > rhs.order)

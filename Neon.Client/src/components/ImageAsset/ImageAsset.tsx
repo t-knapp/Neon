@@ -2,7 +2,7 @@ import { ReactElement } from 'react';
 import React from 'react';
 import { observer } from 'mobx-react';
 import RotatorService from '../../services/RotatorService';
-import neon from './../../../assets/images/Neon.jpg'
+import neon from './../../../assets/images/Neon.jpg';
 
 import './ImageAsset.less';
 

@@ -28,7 +28,7 @@ export default class App extends React.Component<Props> {
         return (
             <Router>
                 <div className='AppComponent'>
-                    <div className='container-fluid'>
+                    <div className='container-fluid' style={{paddingLeft: 0, paddingRight: 0}} >
                         <Switch>
                             <Route path='/assets'>
                                 <Menu>
@@ -50,6 +50,7 @@ export default class App extends React.Component<Props> {
                             </Route>
                         </Switch>
                     </div>
+                    <div className='background' />
                 </div>
             </Router>
         );
