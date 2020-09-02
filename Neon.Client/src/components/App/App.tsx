@@ -28,29 +28,34 @@ export default class App extends React.Component<Props> {
         return (
             <Router>
                 <div className='AppComponent'>
-                    <div className='container-fluid' style={{paddingLeft: 0, paddingRight: 0}} >
-                        <Switch>
-                            <Route path='/assets'>
+                    <Switch>
+                        <Route path='/assets'>
+                            <div className='container-fluid'>
                                 <Menu>
                                     <AssetList provider={this.props.provider} />
                                 </Menu>
-                            </Route>
-                            <Route path='/add'>
+                            </div>
+                        </Route>
+                        <Route path='/add'>
+                            <div className='container-fluid'>
                                 <Menu>
                                     <AddAsset provider={this.props.provider} />
                                 </Menu>
-                            </Route>
-                            <Route path='/edit/:id'>
+                            </div>
+                        </Route>
+                        <Route path='/edit/:id'>
+                            <div className='container-fluid'>
                                 <Menu>
                                     <EditAsset provider={this.props.provider} />
                                 </Menu>
-                            </Route>
-                            <Route path='/'>
+                            </div>
+                        </Route>
+                        <Route path='/'>
+                            <div className='container-fluid' style={{paddingLeft: 0, paddingRight: 0}} >
                                 <ImageAssetWrapper rotator={this.props.rotator} />
-                            </Route>
-                        </Switch>
-                    </div>
-                    <div className='background' />
+                            </div>
+                        </Route>
+                    </Switch>
                 </div>
             </Router>
         );
