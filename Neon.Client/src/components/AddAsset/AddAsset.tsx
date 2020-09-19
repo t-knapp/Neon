@@ -46,31 +46,31 @@ export default class AddAsset extends React.Component<Props, State> {
                     <div className='form-group row'>
                         <label className='col-sm-4 col-form-label'>Name</label>
                         <div className='col-sm-8'>
-                            <input type='text' className='form-control' value={this.state.name} onChange={this._onNameChanged} />
+                            <input type='text' className='form-control' value={this.state.name} onChange={this._onNameChanged} disabled={this.state.addRunning} />
                         </div>
                     </div>
                     <div className='form-group row'>
                         <label className='col-sm-4 col-form-label'>Anzeigezeit (Sekunden)</label>
                         <div className='col-sm-8'>
-                            <input type='number' min='5' max='300' step='1' className='form-control' value={this.state.displayTime} onChange={this._onDisplayTimeChanged} />
+                            <input type='number' min='5' max='300' step='1' className='form-control' value={this.state.displayTime} onChange={this._onDisplayTimeChanged} disabled={this.state.addRunning} />
                         </div>
                     </div>
                     <div className='form-group row'>
                         <label className='col-sm-4 col-form-label'>Bilddatei</label>
                         <div className='col-sm-8'>
-                            <input type='file' className='form-control' onChange={this._onFileChanged} />
+                            <input type='file' className='form-control' onChange={this._onFileChanged} disabled={this.state.addRunning} />
                         </div>
                     </div>
                     <div className='form-group row'>
                         <label className='col-sm-4 col-form-label'>Nicht anzeigen vor (optional)</label>
                         <div className='col-sm-8'>
-                            <input type='date' className='form-control' value={this.state.notBefore} onChange={this._onNotBeforeChanged} />
+                            <input type='date' className='form-control' value={this.state.notBefore} onChange={this._onNotBeforeChanged} disabled={this.state.addRunning} />
                         </div>
                     </div>
                     <div className='form-group row'>
                         <label className='col-sm-4 col-form-label'>Nicht anzeigen nach (optional)</label>
                         <div className='col-sm-8'>
-                            <input type='date' className='form-control' value={this.state.notAfter} onChange={this._onNotAfterChanged} />
+                            <input type='date' className='form-control' value={this.state.notAfter} onChange={this._onNotAfterChanged} disabled={this.state.addRunning}/>
                         </div>
                     </div>
                     <div className='form-group row'>
