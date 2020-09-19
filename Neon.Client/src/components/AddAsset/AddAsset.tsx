@@ -1,4 +1,5 @@
 import React, { ReactElement, ChangeEvent, FormEvent } from 'react';
+import { Redirect } from 'react-router-dom';
 import { boundMethod } from 'autobind-decorator';
 import HttpImageAssetProvider from './../../providers/HttpImageAssetProvider';
 
@@ -12,7 +13,9 @@ type State = {
     context: string,
     file: File,
     notBefore: string,
-    notAfter: string
+    notAfter: string,
+    addRunning: boolean,
+    addFinished: boolean
 };
 
 const DEFAULT_STATE: State = {
@@ -21,7 +24,9 @@ const DEFAULT_STATE: State = {
     context: 'Default',
     file: undefined,
     notBefore: '',
-    notAfter: ''
+    notAfter: '',
+    addRunning: false,
+    addFinished: false
 };
 
 export default class AddAsset extends React.Component<Props, State> {
@@ -34,6 +39,9 @@ export default class AddAsset extends React.Component<Props, State> {
     public render(): ReactElement {
         return (
             <div className='AddAssetComponent'>
+                { this.state.addFinished &&
+                    <Redirect to='/assets' />
+                }
                 <form onSubmit={this._onFormSubmit}>
                     <div className='form-group row'>
                         <label className='col-sm-4 col-form-label'>Name</label>
@@ -67,7 +75,12 @@ export default class AddAsset extends React.Component<Props, State> {
                     </div>
                     <div className='form-group row'>
                         <div className='col-sm-8'>
-                            <button type='submit' className='btn btn-primary'>Speichern</button>
+                            { !this.state.addRunning
+                                ? <button type='submit' className='btn btn-primary'>Speichern</button>
+                                : <button type='button' className='btn btn-primary' disabled>
+                                    <span className='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>
+                                </button>
+                            }
                         </div>
                     </div>
                 </form>
@@ -103,6 +116,7 @@ export default class AddAsset extends React.Component<Props, State> {
     @boundMethod
     private async _onFormSubmit(event: FormEvent<HTMLElement>): Promise<void> {
         event.preventDefault();
+        this.setState({addRunning: true});
         try {
             await this.props.provider.addOneAsync({
                 name: this.state.name,
@@ -113,7 +127,7 @@ export default class AddAsset extends React.Component<Props, State> {
                 notBefore: this.state.notBefore,
                 notAfter: this.state.notAfter
             });
-            this.setState(DEFAULT_STATE);
+            this.setState(Object.assign(DEFAULT_STATE, {addFinished: true}));
         } catch (ex) {
             console.error('Add error', ex);
         }
