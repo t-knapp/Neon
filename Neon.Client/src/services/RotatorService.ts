@@ -68,10 +68,9 @@ export default class RotatorService {
 
     private _filter(asset: ImageAsset): boolean {
         const now: moment.Moment = moment();
-        const r: boolean = asset.isActive
+        return asset.isActive
             && (asset.notBefore ? (moment.utc(asset.notBefore).isSameOrBefore(now, 'day')) : true)
             && (asset.notAfter ? (moment.utc(asset.notAfter).isSameOrAfter(now, 'day')) : true);
-        return r;
     }
 
     private _sort(lhs: ImageAsset, rhs: ImageAsset): number {
