@@ -20,7 +20,9 @@ export default class RotatorService {
 
     public start(): void {
         this._running = true;
-        this._rotate(new Promise((resolve) => { this._cancellation = resolve; }));
+        this._rotate(new Promise((resolve) => {
+            this._cancellation = resolve;
+        }));
     }
 
     public stop(): void {

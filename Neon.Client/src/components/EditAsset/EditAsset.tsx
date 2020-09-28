@@ -40,7 +40,7 @@ const EditAsset: FunctionComponent<Props> = ({provider}) => {
             });
     }, []);
 
-    const onFormSubmit = async (event: FormEvent<HTMLElement>): Promise<void> => {
+    const onFormSubmit: (event: FormEvent<HTMLElement>) => Promise<void> = async (event: FormEvent<HTMLElement>): Promise<void> => {
         event.preventDefault();
         const newAsset: IUpdateImageAssetResource = {
             id: id,
@@ -65,10 +65,10 @@ const EditAsset: FunctionComponent<Props> = ({provider}) => {
                     <label className='col-sm-4 col-form-label'>Vorschau</label>
                     <div className='col-sm-4'>
                         <div className='card bg-dark text-white'>
-                            <img src={state.base64image} className='card-img' alt='Vorschau-Bild'></img>
+                            <img src={state.base64image} className='card-img' alt='Vorschau-Bild'/>
                         </div>
                     </div>
-                    <div className='col-sm-4'></div>
+                    <div className='col-sm-4'/>
                 </div>
                 <div className='form-group row'>
                     <label className='col-sm-4 col-form-label'>Name</label>

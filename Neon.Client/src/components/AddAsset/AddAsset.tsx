@@ -77,8 +77,8 @@ export default class AddAsset extends React.Component<Props, State> {
                         <div className='col-sm-8'>
                             { !this.state.addRunning
                                 ? <button type='submit' className='btn btn-primary'>Speichern</button>
-                                : <button type='button' className='btn btn-primary' disabled>
-                                    <span className='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>
+                                : <button type='button' className='btn btn-primary' disabled={true}>
+                                    <span className='spinner-border spinner-border-sm' role='status' aria-hidden='true'/>
                                 </button>
                             }
                         </div>
