@@ -2,6 +2,7 @@ import { observable, action } from 'mobx';
 import moment from 'moment';
 import HttpImageAssetProvider from '../providers/HttpImageAssetProvider';
 import ImageAsset from '../models/ImageAsset';
+import { toString } from '../helpers/BlobHelper';
 
 export default class RotatorService {
     @observable public currentImage: string;
@@ -41,7 +42,7 @@ export default class RotatorService {
                 }
                 this._index = (this._index + 1) >= assetList.length ? 0 : this._index + 1;
                 const asset: ImageAsset = assetList[this._index];
-                this.currentImage = await this._blobToBase64(await this._provider.oneContentAsync(asset.id));
+                this.currentImage = await toString(await this._provider.oneContentAsync(asset.id));
                 await Promise.race([new Promise((resolve) => window.setTimeout(resolve, asset.displayTime * 1000)), cancellationPromise]);
             } catch (ex) {
                 console.warn('Error while rotating:', ex);
@@ -64,19 +65,5 @@ export default class RotatorService {
         if (lhs.order > rhs.order)
             return 1;
         return 0;
-    }
-
-    private async _blobToBase64(blob: Blob): Promise<string> {
-        return new Promise((resolve, reject) => {
-            const reader: FileReader = new FileReader();
-            reader.onloadend = () => {
-                resolve(reader.result as string);
-            };
-            reader.onerror = () => {
-                reject(reader.error);
-            };
-            // result will be string @see: https://developer.mozilla.org/en-US/docs/Web/API/FileReader/result
-            reader.readAsDataURL(blob);
-        });
     }
 }

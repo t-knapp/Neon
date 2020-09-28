@@ -5,6 +5,7 @@ import { compare } from 'fast-json-patch';
 import HttpImageAssetProvider from '../../providers/HttpImageAssetProvider';
 import ImageAsset from '../../models/ImageAsset';
 import IUpdateImageAssetResource from '../../models/IUpdateImageAssetResource';
+import { toString } from '../../helpers/BlobHelper';
 
 type Props = {
     provider: HttpImageAssetProvider
@@ -18,21 +19,25 @@ const EditAsset: FunctionComponent<Props> = ({provider}) => {
         displayTime: 0,
         notBefore: '',
         notAfter: '',
+        base64image: '',
         done: false,
         originalAsset: null
     });
 
     useEffect(() => {
-        provider.oneAsync(id).then((asset: ImageAsset) => {
-            setState((prevState) => ({
-                ...prevState,
-                originalAsset: asset,
-                name: asset.name,
-                displayTime: asset.displayTime,
-                notBefore: asset.notBefore ? moment.utc(asset.notBefore).format('YYYY-MM-DD') : '',
-                notAfter: asset.notAfter ? moment.utc(asset.notBefore).format('YYYY-MM-DD') : ''
-            }));
-        });
+        provider.oneAsync(id)
+            .then(async (asset: ImageAsset) => {
+                const imageData: string = await toString(await provider.oneContentAsync(asset.id));
+                setState((prevState) => ({
+                    ...prevState,
+                    originalAsset: asset,
+                    name: asset.name,
+                    displayTime: asset.displayTime,
+                    notBefore: asset.notBefore ? moment.utc(asset.notBefore).format('YYYY-MM-DD') : '',
+                    notAfter: asset.notAfter ? moment.utc(asset.notBefore).format('YYYY-MM-DD') : '',
+                    base64image: imageData
+                }));
+            });
     }, []);
 
     const onFormSubmit = async (event: FormEvent<HTMLElement>): Promise<void> => {
@@ -56,6 +61,15 @@ const EditAsset: FunctionComponent<Props> = ({provider}) => {
                 <Redirect to='/assets' />
             }
             <form onSubmit={onFormSubmit}>
+                <div className='form-group row'>
+                    <label className='col-sm-4 col-form-label'>Vorschau</label>
+                    <div className='col-sm-4'>
+                        <div className='card bg-dark text-white'>
+                            <img src={state.base64image} className='card-img' alt='Vorschau-Bild'></img>
+                        </div>
+                    </div>
+                    <div className='col-sm-4'></div>
+                </div>
                 <div className='form-group row'>
                     <label className='col-sm-4 col-form-label'>Name</label>
                     <div className='col-sm-8'>
