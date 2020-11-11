@@ -127,7 +127,7 @@ export default class AddAsset extends React.Component<Props, State> {
                 notBefore: this.state.notBefore,
                 notAfter: this.state.notAfter
             });
-            this.setState(Object.assign(DEFAULT_STATE, {addFinished: true}));
+            this.setState({addFinished: true});
         } catch (ex) {
             console.error('Add error', ex);
         }
