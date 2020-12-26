@@ -17,6 +17,9 @@ export default function Menu(props: Props): ReactElement {
                         <NavLink className='nav-link' to='/assets'>Bilder</NavLink>
                     </li>
                     <li className='nav-item'>
+                        <NavLink className='nav-link' to='/html'>HTML</NavLink>
+                    </li>
+                    <li className='nav-item'>
                         <NavLink className='nav-link' to='/add'>Hinzufügen</NavLink>
                     </li>
                 </ul>

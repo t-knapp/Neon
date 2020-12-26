@@ -16,6 +16,7 @@ import AssetList from '../AssetList/AssetList';
 import AddAsset from '../AddAsset/AddAsset';
 import Menu from '../Menu/Menu';
 import EditAsset from '../EditAsset/EditAsset';
+import AddHtml from '../AddHtml/AddHtml';
 
 type Props = {
     title: string,
@@ -33,6 +34,13 @@ export default class App extends React.Component<Props> {
                             <div className='container-fluid'>
                                 <Menu>
                                     <AssetList provider={this.props.provider} />
+                                </Menu>
+                            </div>
+                        </Route>
+                        <Route path='/html'>
+                            <div className='container-fluid'>
+                                <Menu>
+                                    <AddHtml />
                                 </Menu>
                             </div>
                         </Route>
