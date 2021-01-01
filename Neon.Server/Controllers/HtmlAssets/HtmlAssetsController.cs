@@ -47,7 +47,7 @@ namespace Neon.Server.Controllers {
                 return NotFound();
             }
              catch (Exception ex) {
-                _logger.LogError(ex, $"Cannot get image asset '{id}'.");
+                _logger.LogError(ex, $"Cannot get html asset '{id}'.");
                 return NoContent();
             }
         }
@@ -65,6 +65,7 @@ namespace Neon.Server.Controllers {
                 ));
                 return Ok(_mapper.Map<HtmlAssetResource>(result));
             } catch (Exception ex) {
+                _logger.LogError(ex, $"Cannot add html asset");
                 return BadRequest();
             }
         }
