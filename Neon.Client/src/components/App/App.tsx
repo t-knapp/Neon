@@ -41,14 +41,14 @@ export default class App extends React.Component<Props> {
                                 </Menu>
                             </div>
                         </Route>
-                        <Route path='/html'>
+                        <Route path='/add/html'>
                             <div className='container-fluid'>
                                 <Menu>
                                     <AddHtml provider={this.props.htmlProvider} />
                                 </Menu>
                             </div>
                         </Route>
-                        <Route path='/add'>
+                        <Route path='/add/image'>
                             <div className='container-fluid'>
                                 <Menu>
                                     <AddAsset provider={this.props.imageProvider} />
