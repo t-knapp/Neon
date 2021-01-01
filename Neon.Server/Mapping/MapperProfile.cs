@@ -11,6 +11,13 @@ namespace Neon.Server {
         public MapperProfile()
         {
             CreateMap<ImageAsset, ImageAssetResource>();
+            CreateMap<HtmlAsset, HtmlAssetResource>();
+
+            CreateMap<ImageAsset, Asset>();
+            CreateMap<HtmlAsset, Asset>();
+
+            CreateMap<Asset, AssetResource>();
+
             CreateMap(typeof(JsonPatchDocument<>), typeof(JsonPatchDocument<>));
             CreateMap(typeof(Operation<>), typeof(Operation<>));
         }

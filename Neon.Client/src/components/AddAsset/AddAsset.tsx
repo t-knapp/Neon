@@ -1,10 +1,10 @@
 import React, { ReactElement, ChangeEvent, FormEvent } from 'react';
 import { Redirect } from 'react-router-dom';
 import { boundMethod } from 'autobind-decorator';
-import HttpImageAssetProvider from './../../providers/HttpImageAssetProvider';
+import IImageAssetProvider from '../../providers/IImageAssetProvider';
 
 type Props = {
-    provider: HttpImageAssetProvider;
+    provider: IImageAssetProvider;
 };
 
 type State = {

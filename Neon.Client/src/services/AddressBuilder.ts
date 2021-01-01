@@ -6,6 +6,16 @@ export default class AddressBuilder {
         this._baseUrl = baseUrl.endsWith('/') ? baseUrl : baseUrl + '/';
     }
 
+    public assetAll(): AddressBuilder {
+        this._path = 'assets';
+        return this;
+    }
+
+    public asset(id: string): AddressBuilder {
+        this._path = 'assets/' + id;
+        return this;
+    }
+
     public imageAssetAll(): AddressBuilder {
         this._path = 'imageassets';
         return this;
@@ -18,6 +28,21 @@ export default class AddressBuilder {
 
     public imageAssetContent(id: string): AddressBuilder {
         this._path = 'imageassets/' + id + '/content';
+        return this;
+    }
+
+    public htmlAssetAll(): AddressBuilder {
+        this._path = 'htmlassets';
+        return this;
+    }
+
+    public htmlAsset(id: string): AddressBuilder {
+        this._path = 'htmlassets/' + id;
+        return this;
+    }
+
+    public htmlAssetContent(id: string): AddressBuilder {
+        this._path = 'htmlassets/' + id + '/content';
         return this;
     }
 

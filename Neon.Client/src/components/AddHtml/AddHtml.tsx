@@ -1,10 +1,14 @@
 import React, { ReactElement, useState } from 'react';
 import SunEditor, { buttonList } from 'suneditor-react';
 import 'suneditor/dist/css/suneditor.min.css'; // Import Sun Editor's CSS File
+import IAddHtmlAssetResource from '../../models/IAddHtmlAssetResource';
+import IHtmlAssetProvider from '../../providers/IHtmlAssetProvider';
 
-type Props = { };
+type Props = {
+    provider: IHtmlAssetProvider;
+};
 
-export default function AddHtml(props: Props): ReactElement{
+export default function AddHtml(props: Props): ReactElement {
     const [name, setName] = useState('');
     const [displayTime, setDisplayTime] = useState(10);
     const [notBefore, setNotBefore] = useState('');
@@ -18,14 +22,22 @@ export default function AddHtml(props: Props): ReactElement{
         .concat([['paragraphStyle', 'blockquote']])
         .concat([['fontColor', 'hiliteColor']]);
 
-    const onSubmit: (e: React.FormEvent) => void = (e) => {
+    const onSubmit: (e: React.FormEvent) => Promise<void> = async (e) => {
         e.preventDefault();
         setAddRunning(true);
-        console.log('name', name);
-        console.log('displaytime', displayTime);
-        console.log('notBefore', notBefore);
-        console.log('notAfter', notAfter);
-        console.log('content', content);
+        const resource: IAddHtmlAssetResource = {
+            name,
+            content,
+            displayTime,
+            isActive: true,
+            notAfter,
+            notBefore,
+            order: Math.round(Date.now() / 1000)
+        }
+        console.log('resource', resource);
+        const result = await props.provider.addOneAsync(resource);
+        console.log('result', result);
+        setAddRunning(false);
     };
 
     return (

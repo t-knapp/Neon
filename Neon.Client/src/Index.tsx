@@ -9,11 +9,19 @@ import '@fortawesome/fontawesome-free/js/brands';
 import App from './components/App/App';
 import RotatorService from './services/RotatorService';
 import HttpImageAssetProvider from './providers/HttpImageAssetProvider';
+import IHtmlAssetProvider from './providers/IHtmlAssetProvider';
+import HttpHtmlAssetProvider from './providers/HttpHtmlAssetProvider';
+import IAssetProvider from './providers/IAssetProvider';
+import HttpAssetProvider from './providers/HttpAssetProvider';
 
-const PROVIDER: HttpImageAssetProvider = new HttpImageAssetProvider('http://localhost:5000');
-const ROTATOR: RotatorService = new RotatorService(PROVIDER);
+const BASEURL: string = 'http://localhost:5000';
+
+const ASSETPROVIDER: IAssetProvider = new HttpAssetProvider(BASEURL);
+const IMAGEPROVIDER: HttpImageAssetProvider = new HttpImageAssetProvider(BASEURL);
+const HTMLPROVIDER: IHtmlAssetProvider = new HttpHtmlAssetProvider(BASEURL);
+const ROTATOR: RotatorService = new RotatorService(IMAGEPROVIDER);
 
 ReactDOM.render (
-    <App title='Neon.Client' rotator={ROTATOR} provider={PROVIDER} />,
+    <App title='Neon.Client' rotator={ROTATOR} assetProvider={ASSETPROVIDER} htmlProvider={HTMLPROVIDER} imageProvider={IMAGEPROVIDER} />,
     document.getElementById('root')
 );

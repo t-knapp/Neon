@@ -14,7 +14,7 @@ export default function Menu(props: Props): ReactElement {
                         <Link className='nav-link' to='/'>Gallerie</Link>
                     </li>
                     <li className='nav-item'>
-                        <NavLink className='nav-link' to='/assets'>Bilder</NavLink>
+                        <NavLink className='nav-link' to='/assets'>Liste</NavLink>
                     </li>
                     <li className='nav-item'>
                         <NavLink className='nav-link' to='/html'>HTML</NavLink>

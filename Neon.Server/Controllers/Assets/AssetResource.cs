@@ -1,7 +1,8 @@
 using System;
+using Neon.Server.Models;
 
-namespace Neon.Server.Models {
-    public class Asset {
+namespace Neon.Server.Controllers {
+    public class AssetResource {
         public string Id { get; set;}
         public string Name { get; set; }
         public int DisplayTime { get; set; }

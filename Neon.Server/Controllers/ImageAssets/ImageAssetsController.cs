@@ -75,7 +75,7 @@ namespace Neon.Server.Controllers {
         public async Task<ActionResult<ImageAssetResource>> Add([FromForm] AddImageAssetResource addResource) {
             Stream stream = null;
             try {
-                stream = addResource.Image.OpenReadStream(); // TODO: Where and when is the stream closed?
+                stream = addResource.Image.OpenReadStream();
                 var command = new AddImageAssetCommand.Input(
                     addResource.Name,
                     addResource.DisplayTime,

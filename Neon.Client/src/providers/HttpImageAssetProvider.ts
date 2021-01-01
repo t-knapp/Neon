@@ -3,7 +3,6 @@ import ImageAsset from '../models/ImageAsset';
 import IImageAssetProvider from './IImageAssetProvider';
 import AddressBuilder from '../services/AddressBuilder';
 import IAddImageAssetResource from '../models/IAddImageAssetResource';
-import IUpdateImageAssetResource from '../models/IUpdateImageAssetResource';
 
 export default class HttpImageAssetProvider implements IImageAssetProvider {
     private _baseUrl: string;

@@ -2,13 +2,13 @@ import React, { FunctionComponent, useState, ChangeEvent, FormEvent, useEffect }
 import { useParams, Redirect } from 'react-router-dom';
 import moment from 'moment';
 import { compare } from 'fast-json-patch';
-import HttpImageAssetProvider from '../../providers/HttpImageAssetProvider';
 import ImageAsset from '../../models/ImageAsset';
 import IUpdateImageAssetResource from '../../models/IUpdateImageAssetResource';
 import { toString } from '../../helpers/BlobHelper';
+import IImageAssetProvider from '../../providers/IImageAssetProvider';
 
 type Props = {
-    provider: HttpImageAssetProvider
+    provider: IImageAssetProvider
 };
 
 const EditAsset: FunctionComponent<Props> = ({provider}) => {

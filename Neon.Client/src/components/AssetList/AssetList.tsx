@@ -1,14 +1,14 @@
 import React, { ReactElement } from 'react';
 import moment from 'moment';
-import ImageAsset from '../../models/ImageAsset';
-import HttpImageAssetProvider from '../../providers/HttpImageAssetProvider';
 import { NavLink } from 'react-router-dom';
+import Asset from '../../models/Asset';
+import IAssetProvider from '../../providers/IAssetProvider';
 
 type Props = {
-    provider: HttpImageAssetProvider;
+    provider: IAssetProvider;
 };
 type State = {
-    imageAssets: ImageAsset[];
+    assets: Asset[];
 };
 
 export default class AssetList extends React.Component<Props, State> {
@@ -16,7 +16,7 @@ export default class AssetList extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
-            imageAssets: []
+            assets: []
         };
     }
 
@@ -26,16 +26,14 @@ export default class AssetList extends React.Component<Props, State> {
 
     private async _fetchList(): Promise<void> {
         try {
-            const assets: ImageAsset[] = (await this.props.provider.allAsync()).sort(this._sort);
-            this.setState({
-                imageAssets: assets
-            });
+            const assets: Asset[] = (await this.props.provider.allAsync()).sort(this._sort);
+            this.setState({assets});
         } catch {
-            this.setState({imageAssets: []});
+            this.setState({assets: []});
         }
     }
 
-    private _sort(a: ImageAsset, b: ImageAsset): number {
+    private _sort(a: Asset, b: Asset): number {
         if (a.order < b.order)
             return -1;
         if (a.order > b.order)
@@ -45,9 +43,9 @@ export default class AssetList extends React.Component<Props, State> {
 
     private async _onDelete(id: string): Promise<void> {
         try {
-            const deletedAsset: ImageAsset = await this.props.provider.deleteOneAsync(id);
-            const assets: ImageAsset[] = this.state.imageAssets.filter((asset: ImageAsset) => asset.id !== deletedAsset.id);
-            this.setState({imageAssets: assets});
+            const deletedAsset: Asset = await this.props.provider.deleteOneAsync(id);
+            const assets: Asset[] = this.state.assets.filter((asset: Asset) => asset.id !== deletedAsset.id);
+            this.setState({assets});
         } catch (ex) {
             console.error('Exception deleting', id, ex);
         }
@@ -72,15 +70,15 @@ export default class AssetList extends React.Component<Props, State> {
     }
 
     public render(): ReactElement {
-        const rows: ReactElement[] = this.state.imageAssets.map((asset: ImageAsset, index: number) => {
-            const beforeOrder: number = ((this.state.imageAssets[index - 1]?.order) ?? asset.order) - 1;
-            const afterOrder: number = ((this.state.imageAssets[index + 1]?.order) ?? asset.order) + 1;
+        const rows: ReactElement[] = this.state.assets.map((asset: Asset, index: number) => {
+            const beforeOrder: number = ((this.state.assets[index - 1]?.order) ?? asset.order) - 1;
+            const afterOrder: number = ((this.state.assets[index + 1]?.order) ?? asset.order) + 1;
             return (
                 <tr key={asset.id}>
                     <td>
                         <button type='button' onClick={() => this._onSetOrder(asset.id, beforeOrder)} className='btn btn-outline-primary btn-sm' disabled={index === 0}><i className='fas fa-arrow-up'/></button>
                         &nbsp;
-                        <button type='button' onClick={() => this._onSetOrder(asset.id, afterOrder)} className='btn btn-outline-primary btn-sm' disabled={index === this.state.imageAssets.length - 1}><i className='fas fa-arrow-down'/></button>
+                        <button type='button' onClick={() => this._onSetOrder(asset.id, afterOrder)} className='btn btn-outline-primary btn-sm' disabled={index === this.state.assets.length - 1}><i className='fas fa-arrow-down'/></button>
                     </td>
                     <td>{asset.name}</td>
                     <td>{asset.displayTime}</td>
