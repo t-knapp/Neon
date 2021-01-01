@@ -30,8 +30,11 @@ export default class HttpHtmlAssetProvider implements IHtmlAssetProvider {
             return await result.json();
     }
 
-    public oneContentAsync(id: string): Promise<Blob> {
-        throw new Error('Method not implemented.');
+    public async oneContentAsync(id: string): Promise<string> {
+        const request: Request = new Request(new AddressBuilder(this._baseUrl).htmlAssetContent(id).getUrl());
+        const result: Response = await fetch(request);
+        if (result.status === 200)
+            return await result.text();
     }
 
     public async addOneAsync(asset: IAddHtmlAssetResource): Promise<HtmlAsset> {

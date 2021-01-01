@@ -9,7 +9,6 @@ namespace Neon.Server.Commands {
     public class HtmlAssetQuery : IRequestHandler<HtmlAssetQuery.Input, HtmlAsset> {
         public class Input : IRequest<HtmlAsset> {
             public string Id { get; set; }
-
             public Input(string id) => Id = id;
         }
 

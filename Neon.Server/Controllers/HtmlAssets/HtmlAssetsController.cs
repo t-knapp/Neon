@@ -52,6 +52,22 @@ namespace Neon.Server.Controllers {
             }
         }
 
+        [HttpGet]
+        [Route("{id}/content")]
+        public async Task<ActionResult<string>> GetHtml(string id) {
+            try {
+                var query = new HtmlAssetQuery.Input(id);
+                var asset = await _mediator.Send(query);
+                return Ok(asset.Content);
+            } catch (ArgumentException ex) {
+                _logger.LogError(ex, $"Asset '{id}' not found.");
+                return NotFound();
+            } catch (Exception ex) {
+                _logger.LogError(ex, $"Cannot get html asset content '{id}'.");
+                return NoContent();
+            }
+        }
+
         public async Task<ActionResult<HtmlAssetResource>> Add([FromForm] AddHtmlAssetResource addHtmlAssetResource) {
             try {
                 var result = await _mediator.Send(new AddHtmlAssetCommand.Input(

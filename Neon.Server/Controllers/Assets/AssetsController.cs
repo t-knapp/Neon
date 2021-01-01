@@ -24,7 +24,7 @@ namespace Neon.Server.Controllers {
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AssetResource>>> List() {
             try {
-                var query = new AssetsQuery.Input();
+                var query = new AssetsListQuery.Input();
                 var assets = await _mediator.Send(query);
                 return Ok(_mapper.Map<IEnumerable<Asset>, List<AssetResource>>(assets.ToList()));
             } catch (Exception ex) {

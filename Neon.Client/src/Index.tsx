@@ -19,7 +19,7 @@ const BASEURL: string = 'http://localhost:5000';
 const ASSETPROVIDER: IAssetProvider = new HttpAssetProvider(BASEURL);
 const IMAGEPROVIDER: HttpImageAssetProvider = new HttpImageAssetProvider(BASEURL);
 const HTMLPROVIDER: IHtmlAssetProvider = new HttpHtmlAssetProvider(BASEURL);
-const ROTATOR: RotatorService = new RotatorService(IMAGEPROVIDER);
+const ROTATOR: RotatorService = new RotatorService(ASSETPROVIDER, IMAGEPROVIDER, HTMLPROVIDER);
 
 ReactDOM.render (
     <App title='Neon.Client' rotator={ROTATOR} assetProvider={ASSETPROVIDER} htmlProvider={HTMLPROVIDER} imageProvider={IMAGEPROVIDER} />,

@@ -1,21 +1,29 @@
 import { observable, action } from 'mobx';
 import moment from 'moment';
-import HttpImageAssetProvider from '../providers/HttpImageAssetProvider';
-import ImageAsset from '../models/ImageAsset';
 import { toString } from '../helpers/BlobHelper';
+import Asset, { EAssetType } from '../models/Asset';
+import IAssetProvider from '../providers/IAssetProvider';
+import IHtmlAssetProvider from '../providers/IHtmlAssetProvider';
+import IImageAssetProvider from '../providers/IImageAssetProvider';
 
 export default class RotatorService {
-    @observable public currentImage: string;
+    @observable public available: boolean;
+    @observable public assetType: EAssetType;
+    @observable public currentContent: string;
 
     private _index: number;
     private _running: boolean;
-    private _provider: HttpImageAssetProvider;
+    private _assetProvider: IAssetProvider;
+    private _imageProvider: IImageAssetProvider;
+    private _htmlProvider: IHtmlAssetProvider;
     private _cancellation: () => void;
 
-    constructor(provider: HttpImageAssetProvider) {
+    constructor(assetProvider: IAssetProvider, imageProvider: IImageAssetProvider, htmlProvider: IHtmlAssetProvider) {
         this._index = 0;
         this._running = false;
-        this._provider = provider;
+        this._assetProvider = assetProvider;
+        this._imageProvider = imageProvider;
+        this._htmlProvider = htmlProvider;
     }
 
     public start(): void {
@@ -34,34 +42,45 @@ export default class RotatorService {
     private async _rotate(cancellationPromise: Promise<void>): Promise<void> {
         while (this._running) {
             try {
-                const assetList: ImageAsset[] = (await this._provider.allAsync())
+                const assetList: Asset[] = (await this._assetProvider.allAsync())
                     .filter(this._filter)
                     .sort(this._sort);
                 if (assetList.length === 0) {
-                    this.currentImage = null;
+                    this.currentContent = null;
                     await Promise.race([new Promise((resolve) => window.setTimeout(resolve, 5000)), cancellationPromise]);
                     continue;
                 }
                 this._index = (this._index + 1) >= assetList.length ? 0 : this._index + 1;
-                const asset: ImageAsset = assetList[this._index];
-                this.currentImage = await toString(await this._provider.oneContentAsync(asset.id));
+                const asset: Asset = assetList[this._index];
+                this.available = false;
+                this.currentContent = await this._content(asset);
+                this.assetType = asset.type;
+                this.available = true;
                 await Promise.race([new Promise((resolve) => window.setTimeout(resolve, asset.displayTime * 1000)), cancellationPromise]);
             } catch (ex) {
                 console.warn('Error while rotating:', ex);
-                this.currentImage = null;
+                this.currentContent = null;
                 await Promise.race([new Promise((resolve) => window.setTimeout(resolve, 5000)), cancellationPromise]);
             }
         }
     }
 
-    private _filter(asset: ImageAsset): boolean {
+    private async _content(asset: Asset): Promise<string> {
+        if (asset.type === EAssetType.IMAGE)
+            return toString(await this._imageProvider.oneContentAsync(asset.id));
+
+        if (asset.type === EAssetType.HTML)
+            return this._htmlProvider.oneContentAsync(asset.id);
+    }
+
+    private _filter(asset: Asset): boolean {
         const now: moment.Moment = moment();
         return asset.isActive
             && (asset.notBefore ? (moment.utc(asset.notBefore).isSameOrBefore(now, 'day')) : true)
             && (asset.notAfter ? (moment.utc(asset.notAfter).isSameOrAfter(now, 'day')) : true);
     }
 
-    private _sort(lhs: ImageAsset, rhs: ImageAsset): number {
+    private _sort(lhs: Asset, rhs: Asset): number {
         if (lhs.order < rhs.order)
             return -1;
         if (lhs.order > rhs.order)

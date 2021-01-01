@@ -8,7 +8,7 @@ using MongoDB.Driver;
 using Neon.Server.Models;
 
 namespace Neon.Server.Commands {
-    public class AssetsQuery : IRequestHandler<AssetsQuery.Input, IEnumerable<Asset>> {
+    public class AssetsListQuery : IRequestHandler<AssetsListQuery.Input, IEnumerable<Asset>> {
         public class Input : IRequest<IEnumerable<Asset>> {
             public Input() {}
         }
@@ -17,7 +17,7 @@ namespace Neon.Server.Commands {
         private readonly IMongoCollection<ImageAsset> _imageAssetCollection;
         private readonly IMongoCollection<HtmlAsset> _htmlAssetCollection;
 
-        public AssetsQuery(
+        public AssetsListQuery(
             IMapper mapper,
             IMongoCollection<ImageAsset> imageCollection,
             IMongoCollection<HtmlAsset> htmlCollection
@@ -27,7 +27,7 @@ namespace Neon.Server.Commands {
             _htmlAssetCollection = htmlCollection;
         }
 
-        public Task<IEnumerable<Asset>> Handle(AssetsQuery.Input input, CancellationToken cancellationToken) {
+        public Task<IEnumerable<Asset>> Handle(AssetsListQuery.Input input, CancellationToken cancellationToken) {
             var images = _mapper.Map<IEnumerable<ImageAsset>, IEnumerable<Asset>>(_imageAssetCollection.AsQueryable().AsEnumerable());
             var htmls = _mapper.Map<IEnumerable<HtmlAsset>, IEnumerable<Asset>>(_htmlAssetCollection.AsQueryable().AsEnumerable());
             return Task.FromResult(Enumerable.Concat(images, htmls));
