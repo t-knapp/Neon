@@ -37,6 +37,6 @@ export default function AssetWrapper(props: Props): ReactElement {
             <div className='asset-wrapper' onClick={onClick}>
                 {content}
             </div>
-        )
+        );
     });
 }

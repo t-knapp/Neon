@@ -33,10 +33,8 @@ export default function AddHtml(props: Props): ReactElement {
             notAfter,
             notBefore,
             order: Math.round(Date.now() / 1000)
-        }
-        console.log('resource', resource);
+        };
         const result = await props.provider.addOneAsync(resource);
-        console.log('result', result);
         setAddRunning(false);
     };
 

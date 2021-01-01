@@ -3,12 +3,16 @@ import moment from 'moment';
 import { NavLink } from 'react-router-dom';
 import Asset from '../../models/Asset';
 import IAssetProvider from '../../providers/IAssetProvider';
+import Loading from '../Loading/Loading';
+import ModalLoading from '../Loading/ModalLoading';
 
 type Props = {
     provider: IAssetProvider;
 };
 type State = {
     assets: Asset[];
+    initialized: boolean;
+    loading: boolean;
 };
 
 export default class AssetList extends React.Component<Props, State> {
@@ -16,20 +20,24 @@ export default class AssetList extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
-            assets: []
+            assets: [],
+            initialized: false,
+            loading: true
         };
     }
 
-    public componentDidMount(): void {
-        this._fetchList();
+    public async componentDidMount(): Promise<void> {
+        await this._fetchList();
+        this.setState({initialized: true});
     }
 
     private async _fetchList(): Promise<void> {
         try {
+            this.setState({loading: true});
             const assets: Asset[] = (await this.props.provider.allAsync()).sort(this._sort);
-            this.setState({assets});
+            this.setState({assets, loading: false});
         } catch {
-            this.setState({assets: []});
+            this.setState({assets: [], loading: false});
         }
     }
 
@@ -43,33 +51,45 @@ export default class AssetList extends React.Component<Props, State> {
 
     private async _onDelete(id: string): Promise<void> {
         try {
+            this.setState({loading: true});
             const deletedAsset: Asset = await this.props.provider.deleteOneAsync(id);
             const assets: Asset[] = this.state.assets.filter((asset: Asset) => asset.id !== deletedAsset.id);
             this.setState({assets});
         } catch (ex) {
             console.error('Exception deleting', id, ex);
+        } finally {
+            this.setState({loading: false});
         }
     }
 
     private async _onSetActive(id: string, isActive: boolean): Promise<void> {
         try {
+            this.setState({loading: true});
             await this.props.provider.updateOneAsync(id, [{op: 'replace', path: 'isActive', value: isActive}]);
             await this._fetchList();
         } catch (ex) {
             console.error('Exception while setting state', id, ex);
+        } finally {
+            this.setState({loading: false});
         }
     }
 
     private async _onSetOrder(id: string, order: number): Promise<void> {
         try {
+            this.setState({loading: true});
             await this.props.provider.updateOneAsync(id, [{op: 'replace', path: 'order', value: order}]);
             await this._fetchList();
         } catch (ex) {
             console.error('Exception while setting order', id, order);
+        } finally {
+            this.setState({loading: false});
         }
     }
 
     public render(): ReactElement {
+        if (!this.state.initialized && this.state.loading)
+            return <Loading />;
+
         const rows: ReactElement[] = this.state.assets.map((asset: Asset, index: number) => {
             const beforeOrder: number = ((this.state.assets[index - 1]?.order) ?? asset.order) - 1;
             const afterOrder: number = ((this.state.assets[index + 1]?.order) ?? asset.order) + 1;
@@ -98,6 +118,8 @@ export default class AssetList extends React.Component<Props, State> {
             );
         });
         return (
+            <>
+            { this.state.loading && <ModalLoading /> }
             <table className='table table-hover'>
                 <thead>
                     <tr>
@@ -114,6 +136,7 @@ export default class AssetList extends React.Component<Props, State> {
                     {rows}
                 </tbody>
             </table>
+            </>
         );
     }
 }

@@ -17,6 +17,6 @@ export default function ImageAsset(props: Props): ReactElement {
             <div className='image-asset'>
                 <img src={imageUrl} />
             </div>
-        )
+        );
     });
-};
+}

@@ -1,6 +1,6 @@
-import { useObserver } from "mobx-react";
-import React, { ReactElement } from "react";
-import RotatorService from "../../services/RotatorService";
+import { useObserver } from 'mobx-react';
+import React, { ReactElement } from 'react';
+import RotatorService from '../../services/RotatorService';
 import './HtmlAsset.less';
 
 type Props = {
