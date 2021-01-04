@@ -90,6 +90,14 @@ export default class AssetList extends React.Component<Props, State> {
         return `/edit/${(asset.type === EAssetType.IMAGE) ? 'image' : 'html'}/${asset.id}`;
     }
 
+    private _type(asset: Asset): ReactElement {
+        if (asset.type === EAssetType.IMAGE)
+            return <i className='fas fa-file-image' />;
+        
+        if (asset.type === EAssetType.HTML)
+            return <i className='fas fa-file-alt' />;
+    }
+
     public render(): ReactElement {
         if (!this.state.initialized && this.state.loading)
             return <Loading />;
@@ -104,6 +112,7 @@ export default class AssetList extends React.Component<Props, State> {
                         &nbsp;
                         <button type='button' onClick={() => this._onSetOrder(asset.id, afterOrder)} className='btn btn-outline-primary btn-sm' disabled={index === this.state.assets.length - 1}><i className='fas fa-arrow-down'/></button>
                     </td>
+                    <td>{this._type(asset)}</td>
                     <td>{asset.name}</td>
                     <td>{asset.displayTime}</td>
                     <td>{asset.notBefore ? moment.utc(asset.notBefore).format('DD.MM.YYYY') : ''}</td>
@@ -128,6 +137,7 @@ export default class AssetList extends React.Component<Props, State> {
                 <thead>
                     <tr>
                         <th scope='col'>Position</th>
+                        <th scope='col'>Art</th>
                         <th scope='col'>Name</th>
                         <th scope='col'>Anzeigedauer</th>
                         <th scope='col'>Nicht zeigen vor</th>
