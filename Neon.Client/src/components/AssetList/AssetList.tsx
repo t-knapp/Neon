@@ -1,7 +1,7 @@
 import React, { ReactElement } from 'react';
 import moment from 'moment';
 import { NavLink } from 'react-router-dom';
-import Asset from '../../models/Asset';
+import Asset, { EAssetType } from '../../models/Asset';
 import IAssetProvider from '../../providers/IAssetProvider';
 import Loading from '../Loading/Loading';
 import ModalLoading from '../Loading/ModalLoading';
@@ -86,6 +86,10 @@ export default class AssetList extends React.Component<Props, State> {
         }
     }
 
+    private _editRoute(asset: Asset): string {
+        return `/edit/${(asset.type === EAssetType.IMAGE) ? 'image' : 'html'}/${asset.id}`;
+    }
+
     public render(): ReactElement {
         if (!this.state.initialized && this.state.loading)
             return <Loading />;
@@ -110,7 +114,7 @@ export default class AssetList extends React.Component<Props, State> {
                             {asset.isActive ? 'Aus' : 'Ein'}
                         </button>
                         &nbsp;
-                        <NavLink className='btn btn-outline-primary btn-sm' to={'/edit/' + asset.id}><i className='fas fa-edit'/></NavLink>
+                        <NavLink className='btn btn-outline-primary btn-sm' to={this._editRoute(asset)}><i className='fas fa-edit'/></NavLink>
                         &nbsp;
                         <button type='button' onClick={() => this._onDelete(asset.id)} className='btn btn-outline-danger btn-sm'><i className='fas fa-trash-alt'/></button>
                     </td>

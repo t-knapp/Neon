@@ -60,8 +60,20 @@ export default class HttpHtmlAssetProvider implements IHtmlAssetProvider {
             return await result.json();
     }
 
-    public updateOneAsync(id: string, operations: Operation[]): Promise<HtmlAsset> {
-        throw new Error('Method not implemented.');
+    public async updateOneAsync(id: string, operations: Operation[]): Promise<HtmlAsset> {
+        console.log('updateOneAsync', id, operations);
+        const result: Response = await fetch(
+            new AddressBuilder(this._baseUrl).htmlAsset(id).getUrl(),
+            {
+                method: 'PATCH',
+                body: JSON.stringify(operations),
+                headers: {
+                    'Content-Type': 'application/json-patch+json'
+                }
+            }
+        );
+        if (result.status === 200)
+            return await result.json();
     }
 
     public deleteOneAsync(id: string): Promise<HtmlAsset> {

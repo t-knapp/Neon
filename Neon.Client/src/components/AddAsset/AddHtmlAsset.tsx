@@ -8,7 +8,7 @@ type Props = {
     provider: IHtmlAssetProvider;
 };
 
-export default function AddHtml(props: Props): ReactElement {
+export default function AddHtmlAsset(props: Props): ReactElement {
     const [name, setName] = useState('');
     const [displayTime, setDisplayTime] = useState(10);
     const [notBefore, setNotBefore] = useState('');

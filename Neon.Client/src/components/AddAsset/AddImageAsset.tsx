@@ -29,7 +29,7 @@ const DEFAULT_STATE: State = {
     addFinished: false
 };
 
-export default class AddAsset extends React.Component<Props, State> {
+export default class AddImageAsset extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props);

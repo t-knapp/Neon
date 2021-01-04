@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState, ChangeEvent, FormEvent, useEffect } from 'react';
+import React, { useState, ChangeEvent, FormEvent, useEffect, ReactElement } from 'react';
 import { useParams, Redirect } from 'react-router-dom';
 import moment from 'moment';
 import { compare } from 'fast-json-patch';
@@ -8,12 +8,16 @@ import { toString } from '../../helpers/BlobHelper';
 import IImageAssetProvider from '../../providers/IImageAssetProvider';
 
 type Props = {
-    provider: IImageAssetProvider
+    provider: IImageAssetProvider;
 };
 
-const EditAsset: FunctionComponent<Props> = ({provider}) => {
+type RouteParams = {
+    id: string;
+};
 
-    const { id } = useParams();
+export default function EditImageAsset(props: Props): ReactElement {
+
+    const { id }: RouteParams = useParams<RouteParams>();
     const [state, setState] = useState({
         name: '',
         displayTime: 0,
@@ -25,9 +29,9 @@ const EditAsset: FunctionComponent<Props> = ({provider}) => {
     });
 
     useEffect(() => {
-        provider.oneAsync(id)
+        props.provider.oneAsync(id)
             .then(async (asset: ImageAsset) => {
-                const imageData: string = await toString(await provider.oneContentAsync(asset.id));
+                const imageData: string = await toString(await props.provider.oneContentAsync(asset.id));
                 setState((prevState) => ({
                     ...prevState,
                     originalAsset: asset,
@@ -51,7 +55,7 @@ const EditAsset: FunctionComponent<Props> = ({provider}) => {
             isActive: state.originalAsset.isActive,
             order: state.originalAsset.order,
         };
-        await provider.updateOneAsync(id, compare(state.originalAsset, newAsset));
+        await props.provider.updateOneAsync(id, compare(state.originalAsset, newAsset));
         setState((prevState) => ({...prevState, done: true}));
     };
 
@@ -114,6 +118,4 @@ const EditAsset: FunctionComponent<Props> = ({provider}) => {
             </form>
         </div>
     );
-};
-
-export default EditAsset;
+}

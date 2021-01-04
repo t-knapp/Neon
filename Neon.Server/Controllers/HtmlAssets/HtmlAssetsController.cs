@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.JsonPatch;
 using Neon.Server.Commands;
 using AutoMapper;
 using MediatR;
@@ -68,6 +69,7 @@ namespace Neon.Server.Controllers {
             }
         }
 
+        [HttpPost]
         public async Task<ActionResult<HtmlAssetResource>> Add([FromForm] AddHtmlAssetResource addHtmlAssetResource) {
             try {
                 var result = await _mediator.Send(new AddHtmlAssetCommand.Input(
@@ -83,6 +85,19 @@ namespace Neon.Server.Controllers {
             } catch (Exception ex) {
                 _logger.LogError(ex, $"Cannot add html asset");
                 return BadRequest();
+            }
+        }
+
+        [HttpPatch]
+        [Route("{id}")]
+        public async Task<ActionResult<HtmlAssetResource>> Update(string id, [FromBody] JsonPatchDocument<UpdateHtmlAssetResource> patch) {
+            try {
+                var command = new UpdateHtmlAssetCommand.Input(id, _mapper.Map<JsonPatchDocument<HtmlAsset>>(patch));
+                var result = await _mediator.Send(command);
+                return Ok(_mapper.Map<HtmlAssetResource>(result));
+            } catch (Exception ex) {
+                _logger.LogError(ex, $"Cannot update html asset '{id}'.");
+                return null;
             }
         }
     }

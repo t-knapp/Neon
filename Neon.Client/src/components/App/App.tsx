@@ -9,14 +9,15 @@ import RotatorService from '../../services/RotatorService';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import AssetList from '../AssetList/AssetList';
-import AddAsset from '../AddAsset/AddAsset';
+import AddImageAsset from '../AddAsset/AddImageAsset';
 import Menu from '../Menu/Menu';
-import EditAsset from '../EditAsset/EditAsset';
-import AddHtml from '../AddHtml/AddHtml';
+import EditImageAsset from '../EditAsset/EditImageAsset';
+import AddHtmlAsset from '../AddAsset/AddHtmlAsset';
 import IHtmlAssetProvider from '../../providers/IHtmlAssetProvider';
 import IAssetProvider from '../../providers/IAssetProvider';
 import IImageAssetProvider from '../../providers/IImageAssetProvider';
 import AssetWrapper from '../AssetWrapper/AssetWrapper';
+import EditHtmlAsset from '../EditAsset/EditHtmlAsset';
 
 type Props = {
     title: string,
@@ -42,21 +43,28 @@ export default class App extends React.Component<Props> {
                         <Route path='/add/html'>
                             <div className='container-fluid'>
                                 <Menu>
-                                    <AddHtml provider={this.props.htmlProvider} />
+                                    <AddHtmlAsset provider={this.props.htmlProvider} />
                                 </Menu>
                             </div>
                         </Route>
                         <Route path='/add/image'>
                             <div className='container-fluid'>
                                 <Menu>
-                                    <AddAsset provider={this.props.imageProvider} />
+                                    <AddImageAsset provider={this.props.imageProvider} />
                                 </Menu>
                             </div>
                         </Route>
-                        <Route path='/edit/:id'>
+                        <Route path='/edit/image/:id'>
                             <div className='container-fluid'>
                                 <Menu>
-                                    <EditAsset provider={this.props.imageProvider} />
+                                    <EditImageAsset provider={this.props.imageProvider} />
+                                </Menu>
+                            </div>
+                        </Route>
+                        <Route path='/edit/html/:id'>
+                            <div className='container-fluid'>
+                                <Menu>
+                                    <EditHtmlAsset provider={this.props.htmlProvider} />
                                 </Menu>
                             </div>
                         </Route>
