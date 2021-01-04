@@ -70,18 +70,17 @@ export default function EditHtmlAsset(props: Props): ReactElement {
             await props.provider.updateOneAsync(id, compare(originalAsset, updatedAsset));
             setSuccess(true);
         } catch (ex) {
+            setLoading(false);
             console.log('Error on update', ex);
             // TODO: Toast / Error-Modal
-        } finally {
-            setLoading(false);
         }
     };
 
     if (!initialized && loading)
         return <Loading />;
 
-    // if (success)
-    //    return <Redirect to='/assets' />
+    if (success)
+        return <Redirect to='/assets' />
 
     return (
         <>
