@@ -2,6 +2,7 @@ import React, { ReactElement, ChangeEvent, FormEvent } from 'react';
 import { Redirect } from 'react-router-dom';
 import { boundMethod } from 'autobind-decorator';
 import IImageAssetProvider from '../../providers/IImageAssetProvider';
+import ModalLoading from '../Loading/ModalLoading';
 
 type Props = {
     provider: IImageAssetProvider;
@@ -42,6 +43,7 @@ export default class AddImageAsset extends React.Component<Props, State> {
                 { this.state.addFinished &&
                     <Redirect to='/assets' />
                 }
+                { this.state.addRunning && <ModalLoading /> }
                 <form onSubmit={this._onFormSubmit}>
                     <div className='form-group row'>
                         <label className='col-sm-4 col-form-label'>Name</label>
