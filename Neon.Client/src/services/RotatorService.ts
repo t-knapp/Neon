@@ -53,6 +53,7 @@ export default class RotatorService {
                 this._index = (this._index + 1) >= assetList.length ? 0 : this._index + 1;
                 const asset: Asset = assetList[this._index];
                 this.available = false;
+                await new Promise((resolve) => window.setTimeout(resolve, 333));
                 this.currentContent = await this._content(asset);
                 this.assetType = asset.type;
                 this.available = true;

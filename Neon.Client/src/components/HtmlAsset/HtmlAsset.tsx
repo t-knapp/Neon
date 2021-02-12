@@ -9,7 +9,7 @@ type Props = {
 
 export default function HtmlAsset(props: Props): ReactElement {
     return useObserver(() => (
-        <div className='html-asset'>
+        <div className={'html-asset animate__animated ' + (props.rotator.available) ? 'animate__fadeIn' : 'animate__fadeOut' }>
             <div className='content' dangerouslySetInnerHTML={{__html: props.rotator.currentContent}} />
         </div>
     ));

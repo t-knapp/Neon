@@ -5,6 +5,7 @@ import '@fortawesome/fontawesome-free/js/fontawesome';
 import '@fortawesome/fontawesome-free/js/solid';
 import '@fortawesome/fontawesome-free/js/regular';
 import '@fortawesome/fontawesome-free/js/brands';
+import 'animate.css';
 
 import App from './components/App/App';
 import RotatorService from './services/RotatorService';

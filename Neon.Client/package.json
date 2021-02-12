@@ -106,6 +106,7 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.14.0",
+    "animate.css": "^4.1.1",
     "bootstrap": "^4.5.0",
     "fast-json-patch": "^3.0.0-1",
     "jquery": "^3.5.1",
