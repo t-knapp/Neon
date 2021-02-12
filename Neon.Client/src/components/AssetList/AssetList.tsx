@@ -93,7 +93,7 @@ export default class AssetList extends React.Component<Props, State> {
     private _type(asset: Asset): ReactElement {
         if (asset.type === EAssetType.IMAGE)
             return <i className='fas fa-file-image' />;
-        
+
         if (asset.type === EAssetType.HTML)
             return <i className='fas fa-file-alt' />;
     }

@@ -47,7 +47,7 @@ export default function EditImageAsset(props: Props): ReactElement {
     const onFormSubmit: (event: FormEvent<HTMLElement>) => Promise<void> = async (event: FormEvent<HTMLElement>): Promise<void> => {
         event.preventDefault();
         const newAsset: IUpdateImageAssetResource = {
-            id: id,
+            id,
             name: state.name,
             displayTime: state.displayTime,
             notBefore: state.notBefore,

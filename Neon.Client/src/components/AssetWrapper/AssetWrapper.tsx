@@ -28,9 +28,11 @@ export default function AssetWrapper(props: Props): ReactElement {
     }, []);
 
     return useObserver(() => {
-        const content: ReactElement = (props.rotator.assetType === EAssetType.IMAGE)
-            ? <ImageAsset rotator={props.rotator} />
-            : <HtmlAsset rotator={props.rotator} />
+        const content: ReactElement = (!props.rotator.hasError)
+            ? (props.rotator.assetType === EAssetType.IMAGE)
+                ? <ImageAsset rotator={props.rotator} />
+                : <HtmlAsset rotator={props.rotator} />
+            : null;
         return (
             <div className='asset-wrapper' onClick={onClick}>
                 {content}

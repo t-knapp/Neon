@@ -80,7 +80,7 @@ export default function EditHtmlAsset(props: Props): ReactElement {
         return <Loading />;
 
     if (success)
-        return <Redirect to='/assets' />
+        return <Redirect to='/assets' />;
 
     return (
         <>

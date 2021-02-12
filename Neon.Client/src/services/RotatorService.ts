@@ -10,6 +10,7 @@ export default class RotatorService {
     @observable public available: boolean;
     @observable public assetType: EAssetType;
     @observable public currentContent: string;
+    @observable public hasError: boolean;
 
     private _index: number;
     private _running: boolean;
@@ -58,8 +59,10 @@ export default class RotatorService {
                 this.assetType = asset.type;
                 this.available = true;
                 await Promise.race([new Promise((resolve) => window.setTimeout(resolve, asset.displayTime * 1000)), cancellationPromise]);
+                this.hasError = false;
             } catch (ex) {
                 console.warn('Error while rotating:', ex);
+                this.hasError = true;
                 this.currentContent = null;
                 await Promise.race([new Promise((resolve) => window.setTimeout(resolve, 5000)), cancellationPromise]);
             }
