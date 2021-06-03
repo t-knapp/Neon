@@ -3,7 +3,6 @@ import moment from 'moment';
 import React, { ReactElement, useEffect, useState } from 'react';
 import { Redirect, useParams } from 'react-router-dom';
 import SunEditor, { buttonList } from 'suneditor-react';
-import 'suneditor/dist/css/suneditor.min.css'; // Import Sun Editor's CSS File
 import HtmlAsset from '../../models/HtmlAsset';
 import IUpdateHtmlAssetResource from '../../models/IUpdateHtmlAssetResource';
 import IHtmlAssetProvider from '../../providers/IHtmlAssetProvider';

@@ -1,7 +1,6 @@
 import React, { ReactElement, useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import SunEditor, { buttonList } from 'suneditor-react';
-import 'suneditor/dist/css/suneditor.min.css'; // Import Sun Editor's CSS File
 import IAddHtmlAssetResource from '../../models/IAddHtmlAssetResource';
 import IHtmlAssetProvider from '../../providers/IHtmlAssetProvider';
 import ModalLoading from '../Loading/ModalLoading';
