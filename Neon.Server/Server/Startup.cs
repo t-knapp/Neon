@@ -13,8 +13,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Options;
 using Neon.Server.Configuration;
-using AutoMapper;
-using MediatR;
+using Neon.Application;
 
 namespace Neon.Server
 {
@@ -33,14 +32,12 @@ namespace Neon.Server
             services.AddOptions();
             services.AddOptions<ImageOptions>().Bind(Configuration.GetSection(ImageOptions.IDENTIFIER));
 
+            services.AddApplication(Configuration);
+
             services.AddControllers(options =>
             {
                 options.InputFormatters.Insert(0, GetJsonPatchInputFormatter());
             });
-
-            services.AddAutoMapper( typeof( Startup ) );
-
-            services.AddMediatR( AppDomain.CurrentDomain.GetAssemblies() );
 
             services.AddSwaggerGen();
 
