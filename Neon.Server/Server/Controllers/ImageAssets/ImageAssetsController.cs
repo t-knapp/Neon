@@ -72,31 +72,31 @@ public class ImageAssetsController : ControllerBase {
 //        }
 //    }
 //
-//    [HttpPost]
-//    public async Task<ActionResult<ImageAssetResource>> Add([FromForm] AddImageAssetResource addResource) {
-//        Stream stream = null;
-//        try {
-//            stream = addResource.Image.OpenReadStream();
-//            var command = new AddImageAssetCommand.Input(
-//                addResource.Name,
-//                addResource.DisplayTime,
-//                addResource.IsActive,
-//                addResource.Order,
-//                stream,
-//                addResource.Image.ContentType,
-//                addResource.NotBefore,
-//                addResource.NotAfter
-//            );
-//            var result = await _mediator.Send(command);
-//            return Ok(_mapper.Map<ImageAssetResource>(result));
-//        } catch (Exception ex) {
-//            _logger.LogError(ex, "Cannot add image asset.");
-//            return BadRequest(ex);
-//        } finally {
-//            if (stream != null)
-//                stream.Close();
-//        }
-//    }
+    [HttpPost]
+    public async Task<ActionResult<ImageAssetResource>> Add([FromForm] AddImageAssetResource addResource) {
+        Stream stream = null;
+        try {
+            stream = addResource.Image.OpenReadStream();
+            var command = new AddImageAssetCommand.Input(
+                addResource.Name,
+                addResource.DisplayTime,
+                addResource.IsActive,
+                addResource.Order,
+                stream,
+                addResource.Image.ContentType,
+                addResource.NotBefore,
+                addResource.NotAfter
+            );
+            var result = await _mediator.Send(command);
+            return Ok(_mapper.Map<ImageAssetResource>(result));
+        } catch (Exception ex) {
+            _logger.LogError(ex, "Cannot add image asset.");
+            return BadRequest(ex);
+        } finally {
+            if (stream != null)
+                stream.Close();
+        }
+    }
 //
 //    [HttpPatch]
 //    [Route("{id}")]

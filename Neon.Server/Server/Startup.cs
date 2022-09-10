@@ -12,8 +12,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Options;
-using Neon.Server.Configuration;
 using Neon.Application;
+using Neon.Infrastructure;
 
 namespace Neon.Server
 {
@@ -33,6 +33,7 @@ namespace Neon.Server
             services.AddOptions<ImageOptions>().Bind(Configuration.GetSection(ImageOptions.IDENTIFIER));
 
             services.AddApplication(Configuration);
+            services.AddInfrastructure(Configuration);
 
             services.AddControllers(options =>
             {

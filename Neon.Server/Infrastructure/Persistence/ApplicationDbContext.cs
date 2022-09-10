@@ -1,13 +1,23 @@
+using Microsoft.EntityFrameworkCore;
 using Neon.Application;
+using Neon.Domain;
 
 namespace Neon.Infrastructure;
 
-public class ApplicationDbContext : IApplicationDbContext {
+public abstract partial class ApplicationDbContext : DbContext, IApplicationDbContext {
 
-    public IImageAssetRepository ImageAssetRepository { get; }
+    public DbSet<ImageAsset> ImageAssets { get; set; }
+    public IImageAssetRepository ImageAssetRepository => new ImageAssetRepository( ImageAssets );
 
-    public Task SaveChangesAsync(CancellationToken cancellationToken = default) {
-        return Task.FromCanceled(cancellationToken);
+    public ApplicationDbContext( DbContextOptions options ) : base( options ) { }
+
+    public override Task<int> SaveChangesAsync( CancellationToken cancellationToken = default ) {
+        return base.SaveChangesAsync( cancellationToken );
+    }
+
+    protected override void OnModelCreating( ModelBuilder builder )
+    {
+        builder.Entity<ImageAsset>().HasIndex( x => new { x.Id } ).IsUnique();
     }
 
 }
