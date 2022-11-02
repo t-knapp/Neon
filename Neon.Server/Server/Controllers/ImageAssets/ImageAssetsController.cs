@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 using System.IO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.JsonPatch;
+using Swashbuckle.AspNetCore.Annotations;
+using Microsoft.AspNetCore.Authorization;
 using AutoMapper;
 using MediatR;
 using Neon.Domain;
@@ -24,36 +25,15 @@ public class ImageAssetsController : ControllerBase {
         => (_logger, _mediator, _mapper) = (logger, mediator, mapper);
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<ImageAssetResource>>> List() {
-        try {
-            var query = new ListImageAssetsQuery.Input();
-            var assets = await _mediator.Send(query);
-            return Ok(_mapper.Map<IEnumerable<ImageAsset>, List<ImageAssetResource>>(assets.ToList()));
-        } catch (Exception ex) {
-            _logger.LogError(ex, "Cannot list image assets.");
-            return null;
-        }
+    public async Task<IActionResult> List() {
+        return Ok(await _mediator.Send(new GetImageAssetInfosQuery()));
     }
 
-//    [HttpGet]
-//    [Route("{id}")]
-//    public async Task<ActionResult<ImageAssetResource>> Get(string id) {
-//        if (string.IsNullOrEmpty(id))
-//            return BadRequest();
-//
-//        try {
-//            var query = new ImageAssetQuery.Input(id);
-//            var tuple = await _mediator.Send(query);
-//            return Ok(_mapper.Map<ImageAssetResource>(tuple.Item1));
-//        } catch (ArgumentException ex) {
-//            _logger.LogError(ex, $"Asset '{id}' not found.");
-//            return NotFound();
-//        }
-//            catch (Exception ex) {
-//            _logger.LogError(ex, $"Cannot get image asset '{id}'.");
-//            return NoContent();
-//        }
-//    }
+    [HttpGet]
+    [Route("{id}")]
+    public async Task<IActionResult> Get(Guid id) {
+        return Ok(await _mediator.Send(new GetImageAssetsQuery(id)));
+    }
 //
 //    [HttpGet]
 //    [Route("{id}/content")]
