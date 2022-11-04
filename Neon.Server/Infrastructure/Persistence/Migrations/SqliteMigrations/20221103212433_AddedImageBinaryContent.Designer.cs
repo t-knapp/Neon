@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Neon.Infrastructure;
 
@@ -10,9 +11,10 @@ using Neon.Infrastructure;
 namespace Infrastructure.Persistence.Migrations.SqliteMigrations
 {
     [DbContext(typeof(SqliteDbContext))]
-    partial class SqliteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221103212433_AddedImageBinaryContent")]
+    partial class AddedImageBinaryContent
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.8");
@@ -49,10 +51,6 @@ namespace Infrastructure.Persistence.Migrations.SqliteMigrations
 
                     b.Property<int>("Order")
                         .HasColumnType("INTEGER");
-
-                    b.Property<byte[]>("ThumbnailContent")
-                        .IsRequired()
-                        .HasColumnType("BLOB");
 
                     b.Property<int>("Type")
                         .HasColumnType("INTEGER");

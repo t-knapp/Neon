@@ -38,3 +38,6 @@ msbuild.wrn
 
 # .NET Core
 appsettings.Development.json
+
+# SQLite database file
+Neon.Server.db*

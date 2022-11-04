@@ -53,11 +53,11 @@ public class ImageAssetsController : ControllerBase {
 //    }
 //
     [HttpPost]
-    public async Task<ActionResult<ImageAssetResource>> Add([FromForm] AddImageAssetResource addResource) {
+    public async Task<IActionResult> Add([FromForm] AddImageAssetResource addResource) {
         Stream stream = null;
         try {
             stream = addResource.Image.OpenReadStream();
-            var command = new AddImageAssetCommand.Input(
+            var command = new AddImageAssetCommand(
                 addResource.Name,
                 addResource.DisplayTime,
                 addResource.IsActive,
@@ -67,8 +67,7 @@ public class ImageAssetsController : ControllerBase {
                 addResource.NotBefore,
                 addResource.NotAfter
             );
-            var result = await _mediator.Send(command);
-            return Ok(_mapper.Map<ImageAssetResource>(result));
+            return Ok(await _mediator.Send(command));
         } catch (Exception ex) {
             _logger.LogError(ex, "Cannot add image asset.");
             return BadRequest(ex);
