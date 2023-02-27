@@ -2,6 +2,8 @@ using System;
 
 namespace Neon.Domain;
 
+public record ImageFile(string Name, string MimeType, byte[] Data);
+
 public class ImageAsset : Entity {
     public string Name { get; set; }
     public int DisplayTime { get; set; }

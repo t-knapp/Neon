@@ -34,24 +34,40 @@ public class ImageAssetsController : ControllerBase {
     public async Task<IActionResult> Get(Guid id) {
         return Ok(await _mediator.Send(new GetImageAssetsQuery(id)));
     }
-//
-//    [HttpGet]
-//    [Route("{id}/content")]
-//    public async Task<IActionResult> GetImage(string id) {
-//        try {
-//            var query = new ImageAssetQuery.Input(id, true);
-//            var tuple = await _mediator.Send(query); // TODO: Where and when is the stream closed?
-//            await tuple.Item2.FlushAsync();
-//            return File(tuple.Item2, tuple.Item1.ContentType ?? "application/octet-stream");
-//        } catch (ArgumentException ex) {
-//            _logger.LogError(ex, $"Asset '{id}' not found.");
-//            return NotFound();
-//        } catch (Exception ex) {
-//            _logger.LogError(ex, $"Cannot get image asset content '{id}'.");
-//            return NoContent();
-//        }
-//    }
-//
+
+    [HttpGet]
+    [Route("{id}/thumbnail")]
+    public async Task<IActionResult> GetThumbnail(Guid id) {
+        try {
+            var query = new GetImageAssetThumbnailQuery(id);
+            var imageFile = await _mediator.Send(query);
+            return File(imageFile.Data, imageFile.MimeType);
+        } catch (ArgumentException ex) {
+            _logger.LogError(ex, $"Asset '{id}' not found.");
+            return NotFound();
+        } catch (Exception ex) {
+            _logger.LogError(ex, $"Cannot get image asset content '{id}'.");
+            return NoContent();
+        }
+    }
+
+
+    [HttpGet]
+    [Route("{id}/content")]
+    public async Task<IActionResult> GetContent(Guid id) {
+        try {
+            var query = new GetImageAssetContentQuery(id);
+            var imageFile = await _mediator.Send(query);
+            return File(imageFile.Data, imageFile.MimeType);
+        } catch (ArgumentException ex) {
+            _logger.LogError(ex, $"Asset '{id}' not found.");
+            return NotFound();
+        } catch (Exception ex) {
+            _logger.LogError(ex, $"Cannot get image asset content '{id}'.");
+            return NoContent();
+        }
+    }
+
     [HttpPost]
     public async Task<IActionResult> Add([FromForm] AddImageAssetResource addResource) {
         Stream stream = null;
