@@ -1,8 +1,10 @@
 using System;
+using Neon.Domain;
 
-namespace Neon.Domain;
+namespace Neon.Application;
 
-public abstract class Asset : Entity {
+public class AssetResource : IMapFrom<ImageAsset> {
+    public string Id { get; set;}
     public string Name { get; set; }
     public int DisplayTime { get; set; }
     public bool IsActive { get; set; }

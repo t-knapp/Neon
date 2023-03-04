@@ -15,6 +15,7 @@ namespace Neon.Server.Controllers;
 [ApiController]
 [Route("[controller]")]
 public class AssetsController : ControllerBase {
+
     private readonly ILogger<AssetsController> _logger;
     private readonly IMediator _mediator;
     private readonly IMapper _mapper;
@@ -22,18 +23,18 @@ public class AssetsController : ControllerBase {
     public AssetsController(ILogger<AssetsController> logger, IMediator mediator, IMapper mapper)
         => (_logger, _mediator, _mapper) = (logger, mediator, mapper);
 
-//    [HttpGet]
-//    public async Task<ActionResult<IEnumerable<AssetResource>>> List() {
-//        try {
-//            var query = new AssetsListQuery.Input();
-//            var assets = await _mediator.Send(query);
-//            return Ok(_mapper.Map<IEnumerable<Asset>, List<AssetResource>>(assets.ToList()));
-//        } catch (Exception ex) {
-//            _logger.LogError(ex, "Cannot list assets.");
-//            return null;
-//        }
-//    }
-//
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<AssetResource>>> List() {
+        try {
+            var query = new AssetListQuery();
+            var assets = await _mediator.Send(query);
+            return Ok(_mapper.Map<IEnumerable<Asset>, List<AssetResource>>(assets.ToList()));
+        } catch (Exception ex) {
+            _logger.LogError(ex, "Cannot list assets.");
+            return null;
+        }
+    }
+
 //    [HttpPatch]
 //    [Route("{id}")]
 //    public async Task<ActionResult<AssetResource>> Update(string id, [FromBody] JsonPatchDocument<UpdateAssetResource> resource) {
