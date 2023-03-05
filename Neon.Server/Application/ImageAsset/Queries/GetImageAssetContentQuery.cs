@@ -21,6 +21,6 @@ public class GetImageAssetContentQueryHandler : IRequestHandler<GetImageAssetCon
         if (asset is null)
             throw new Exception($"Asset with id {query.id} not found");
         
-        return new ImageFile(query.id.ToString(), "image/jpeg", asset.Content); // TODO: Content-Type from Entity
+        return new ImageFile(query.id.ToString(), "image/jpeg", asset.ImageContent); // TODO: Content-Type from Entity
     }
 }

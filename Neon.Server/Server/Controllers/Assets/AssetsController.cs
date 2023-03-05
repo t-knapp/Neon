@@ -24,11 +24,10 @@ public class AssetsController : ControllerBase {
         => (_logger, _mediator, _mapper) = (logger, mediator, mapper);
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<AssetResource>>> List() {
+    public async Task<ActionResult<IEnumerable<AssetDTO>>> List() {
         try {
-            var query = new AssetListQuery();
-            var assets = await _mediator.Send(query);
-            return Ok(_mapper.Map<IEnumerable<Asset>, List<AssetResource>>(assets.ToList()));
+            var assets = await _mediator.Send(new AssetListQuery());
+            return Ok(_mapper.Map<IEnumerable<Asset>, List<AssetDTO>>(assets.ToList()));
         } catch (Exception ex) {
             _logger.LogError(ex, "Cannot list assets.");
             return null;
@@ -47,17 +46,17 @@ public class AssetsController : ControllerBase {
 //            return null;
 //        }
 //    }
-//
-//    [HttpDelete]
-//    [Route("{id}")]
-//    public async Task<ActionResult<AssetResource>> Delete(string id) {
-//        try {
-//            var command = new DeleteAssetCommand.Input(id);
-//            var deletedAsset = await _mediator.Send(command);
-//            return Ok(_mapper.Map<AssetResource>(deletedAsset));
-//        } catch (Exception ex) {
-//            _logger.LogError(ex, "Cannot delete asset.");
-//            return null;
-//        }
-//    }
+
+   [HttpDelete]
+   [Route("{id}")]
+   public async Task<ActionResult<AssetDTO>> Delete(Guid id) {
+       try {
+           var deletedAsset = await _mediator.Send(new DeleteAssetCommand(id));
+           return Ok(_mapper.Map<AssetDTO>(deletedAsset));
+       } catch (Exception ex) {
+           _logger.LogError(ex, "Cannot delete asset.");
+           return null;
+       }
+   }
+
 }

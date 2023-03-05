@@ -9,9 +9,11 @@ public abstract partial class ApplicationDbContext : DbContext, IApplicationDbCo
 
     public DbSet<Asset> Assets { get; set; }
     public DbSet<ImageAsset> ImageAssets { get; set; }
+    public DbSet<HtmlAsset> HtmlAssets { get; set; }
 
     public IAssetRepository AssetRepository => new AssetRepository( Assets );
     public IImageAssetRepository ImageAssetRepository => new ImageAssetRepository( ImageAssets );
+    public IHtmlAssetRepository HtmlAssetRepository => new HtmlAssetRepository( HtmlAssets );
 
     public ApplicationDbContext( DbContextOptions options ) : base( options ) { }
 
@@ -27,7 +29,8 @@ public abstract partial class ApplicationDbContext : DbContext, IApplicationDbCo
 
         builder.Entity<Asset>()
             .HasDiscriminator( e => e.Type )
-            .HasValue<ImageAsset>( EAssetType.Image );
+            .HasValue<ImageAsset>( EAssetType.Image )
+            .HasValue<HtmlAsset>( EAssetType.TextHtml );
 
         builder.Entity<Asset>()
             .Property( e => e.Type )
@@ -81,6 +84,31 @@ public abstract partial class ApplicationDbContext : DbContext, IApplicationDbCo
             .HasColumnName( "NotBefore" );
                
         builder.Entity<ImageAsset>()
+            .Property( e => e.Order )
+            .HasColumnName( "Order" );
+
+        
+        builder.Entity<HtmlAsset>()
+            .Property( e => e.Name )
+            .HasColumnName( "Name" );
+
+        builder.Entity<HtmlAsset>()
+            .Property( e => e.DisplayTime )
+            .HasColumnName( "DisplayTime" );
+        
+        builder.Entity<HtmlAsset>()
+            .Property( e => e.IsActive )
+            .HasColumnName( "IsActive" );
+               
+        builder.Entity<HtmlAsset>()
+            .Property( e => e.NotAfter )
+            .HasColumnName( "NotAfter" );
+               
+        builder.Entity<HtmlAsset>()
+            .Property( e => e.NotBefore )
+            .HasColumnName( "NotBefore" );
+               
+        builder.Entity<HtmlAsset>()
             .Property( e => e.Order )
             .HasColumnName( "Order" );
 

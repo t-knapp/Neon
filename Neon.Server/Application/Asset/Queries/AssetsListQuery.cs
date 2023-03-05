@@ -20,6 +20,6 @@ public class AssetsListQueryHandler : IRequestHandler<AssetListQuery, IEnumerabl
     }
 
     public Task<IEnumerable<Asset>> Handle(AssetListQuery input, CancellationToken cancellationToken) {
-        return _database.AssetRepository.AllAsync( cancellationToken );
+        return Task.FromResult( _database.AssetRepository.Query().OrderBy( a => a.Order ).AsEnumerable() );
     }
 }

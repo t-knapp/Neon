@@ -5,10 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.JsonPatch;
-using Neon.Application;
 using AutoMapper;
 using MediatR;
-using Neon.Domain;
+using Neon.Application;
 
 namespace Neon.Server.Controllers;
 
@@ -69,26 +68,26 @@ public class HtmlAssetsController : ControllerBase {
 //               return NoContent();
 //           }
 //       }
-//
-//       [HttpPost]
-//       public async Task<ActionResult<HtmlAssetResource>> Add([FromForm] AddHtmlAssetResource addHtmlAssetResource) {
-//           try {
-//               var result = await _mediator.Send(new AddHtmlAssetCommand.Input(
-//                   addHtmlAssetResource.Name,
-//                   addHtmlAssetResource.DisplayTime,
-//                   addHtmlAssetResource.IsActive,
-//                   addHtmlAssetResource.Order,
-//                   addHtmlAssetResource.Content,
-//                   addHtmlAssetResource.NotBefore,
-//                   addHtmlAssetResource.NotAfter
-//               ));
-//               return Ok(_mapper.Map<HtmlAssetResource>(result));
-//           } catch (Exception ex) {
-//               _logger.LogError(ex, $"Cannot add html asset");
-//               return BadRequest();
-//           }
-//       }
-//
+
+       [HttpPost]
+       public async Task<ActionResult<HtmlAssetResource>> Add([FromForm] AddHtmlAssetResource addHtmlAssetResource) {
+           try {
+               var result = await _mediator.Send(new AddHttpAssetCommand(
+                   addHtmlAssetResource.Name,
+                   addHtmlAssetResource.DisplayTime,
+                   addHtmlAssetResource.IsActive,
+                   addHtmlAssetResource.Order,
+                   addHtmlAssetResource.Content,
+                   addHtmlAssetResource.NotBefore,
+                   addHtmlAssetResource.NotAfter
+               ));
+               return Ok(_mapper.Map<HtmlAssetResource>(result));
+           } catch (Exception ex) {
+               _logger.LogError(ex, $"Cannot add html asset");
+               return BadRequest();
+           }
+       }
+
 //       [HttpPatch]
 //       [Route("{id}")]
 //       public async Task<ActionResult<HtmlAssetResource>> Update(string id, [FromBody] JsonPatchDocument<UpdateHtmlAssetResource> patch) {
