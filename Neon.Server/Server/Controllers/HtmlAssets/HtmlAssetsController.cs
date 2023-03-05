@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.JsonPatch;
 using AutoMapper;
 using MediatR;
 using Neon.Application;
@@ -21,83 +20,83 @@ public class HtmlAssetsController : ControllerBase {
     public HtmlAssetsController(ILogger<HtmlAssetsController> logger, IMediator mediator, IMapper mapper)
         => (_logger, _mediator, _mapper) = (logger, mediator, mapper);
 
-//        [HttpGet]
-//       public async Task<ActionResult<IEnumerable<HtmlAssetResource>>> List() {
-//           try {
-//               var query = new ListHtmlAssetsQuery.Input();
-//               var assets = await _mediator.Send(query);
-//               return Ok(_mapper.Map<IEnumerable<HtmlAsset>, List<HtmlAssetResource>>(assets.ToList()));
-//           } catch (Exception ex) {
-//               _logger.LogError(ex, "Cannot list html assets.");
-//               return null;
-//           }
-//       }
-//
-//       [HttpGet]
-//       [Route("{id}")]
-//       public async Task<ActionResult<HtmlAssetResource>> Get(string id) {
-//           if (string.IsNullOrEmpty(id))
-//               return BadRequest();
-//
-//           try {
-//               var query = new HtmlAssetQuery.Input(id);
-//               var asset = await _mediator.Send(query);
-//               return Ok(_mapper.Map<HtmlAssetResource>(asset));
-//           } catch (ArgumentException ex) {
-//               _logger.LogError(ex, $"Asset '{id}' not found.");
-//               return NotFound();
-//           }
-//            catch (Exception ex) {
-//               _logger.LogError(ex, $"Cannot get html asset '{id}'.");
-//               return NoContent();
-//           }
-//       }
-//
-//       [HttpGet]
-//       [Route("{id}/content")]
-//       public async Task<ActionResult<string>> GetHtml(string id) {
-//           try {
-//               var query = new HtmlAssetQuery.Input(id);
-//               var asset = await _mediator.Send(query);
-//               return Ok(asset.Content);
-//           } catch (ArgumentException ex) {
-//               _logger.LogError(ex, $"Asset '{id}' not found.");
-//               return NotFound();
-//           } catch (Exception ex) {
-//               _logger.LogError(ex, $"Cannot get html asset content '{id}'.");
-//               return NoContent();
-//           }
-//       }
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<HtmlAssetInfoDTO>>> List() {
+        try {
+            return Ok(await _mediator.Send(new GetHtmlAssetListQuery()));
+        } catch (Exception ex) {
+            _logger.LogError(ex, "Cannot list html assets.");
+            return null;
+        }
+    }
 
-       [HttpPost]
-       public async Task<ActionResult<HtmlAssetResource>> Add([FromForm] AddHtmlAssetResource addHtmlAssetResource) {
-           try {
-               var result = await _mediator.Send(new AddHttpAssetCommand(
-                   addHtmlAssetResource.Name,
-                   addHtmlAssetResource.DisplayTime,
-                   addHtmlAssetResource.IsActive,
-                   addHtmlAssetResource.Order,
-                   addHtmlAssetResource.Content,
-                   addHtmlAssetResource.NotBefore,
-                   addHtmlAssetResource.NotAfter
-               ));
-               return Ok(_mapper.Map<HtmlAssetResource>(result));
-           } catch (Exception ex) {
-               _logger.LogError(ex, $"Cannot add html asset");
-               return BadRequest();
-           }
-       }
+    [HttpGet]
+    [Route("{id}")]
+    public async Task<ActionResult<HtmlAssetDTO>> Get(Guid id) {
+        try {
+            var asset = await _mediator.Send(new GetHtmlAssetQuery(id));
+            return Ok(asset);
+        } catch (ArgumentException ex) {
+            _logger.LogError(ex, $"Asset '{id}' not found.");
+            return NotFound();
+        }
+         catch (Exception ex) {
+            _logger.LogError(ex, $"Cannot get html asset '{id}'.");
+            return NoContent();
+        }
+    }
 
-//       [HttpPatch]
-//       [Route("{id}")]
-//       public async Task<ActionResult<HtmlAssetResource>> Update(string id, [FromBody] JsonPatchDocument<UpdateHtmlAssetResource> patch) {
-//           try {
-//               var command = new UpdateHtmlAssetCommand.Input(id, _mapper.Map<JsonPatchDocument<HtmlAsset>>(patch));
-//               var result = await _mediator.Send(command);
-//               return Ok(_mapper.Map<HtmlAssetResource>(result));
-//           } catch (Exception ex) {
-//               _logger.LogError(ex, $"Cannot update html asset '{id}'.");
-//               return null;
-//           }
-//       }
+    [HttpGet]
+    [Route("{id}/content")]
+    public async Task<ActionResult<string>> GetHtml(Guid id) {
+        try {
+            return Ok(await _mediator.Send(new GetHtmlAssetContentQuery(id)));
+        } catch (ArgumentException ex) {
+            _logger.LogError(ex, $"Asset '{id}' not found.");
+            return NotFound();
+        } catch (Exception ex) {
+            _logger.LogError(ex, $"Cannot get html asset content '{id}'.");
+            return NoContent();
+        }
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<HtmlAssetDTO>> Add([FromForm] AddHtmlAssetResource addHtmlAssetResource) {
+        try {
+            var command = new AddHtmlAssetCommand(
+                addHtmlAssetResource.Name,
+                addHtmlAssetResource.DisplayTime,
+                addHtmlAssetResource.IsActive,
+                addHtmlAssetResource.Order,
+                addHtmlAssetResource.Content,
+                addHtmlAssetResource.NotBefore,
+                addHtmlAssetResource.NotAfter
+            );
+            return Ok(await _mediator.Send(command));
+        } catch (Exception ex) {
+            _logger.LogError(ex, $"Cannot add html asset");
+            return BadRequest();
+        }
+    }
+
+    [HttpPut]
+    [Route("{id}")]
+    public async Task<ActionResult<HtmlAssetDTO>> Update(Guid id, UpdateHtmlAssetResource resource) {
+        try {
+            var command = new UpdateHtmlAssetCommand(
+                id,
+                resource.Name,
+                resource.DisplayTime,
+                resource.IsActive,
+                resource.Order,
+                resource.NotBefore,
+                resource.NotAfter,
+                resource.Content
+            );
+            return Ok(await _mediator.Send(command));
+        } catch (Exception ex) {
+            _logger.LogError(ex, $"Cannot update html asset '{id}'.");
+            return null;
+        }
+    }
 }

@@ -9,7 +9,6 @@ using Swashbuckle.AspNetCore.Annotations;
 using Microsoft.AspNetCore.Authorization;
 using AutoMapper;
 using MediatR;
-using Neon.Domain;
 using Neon.Application;
 
 namespace Neon.Server.Controllers;
@@ -32,7 +31,7 @@ public class ImageAssetsController : ControllerBase {
     [HttpGet]
     [Route("{id}")]
     public async Task<IActionResult> Get(Guid id) {
-        return Ok(await _mediator.Send(new GetImageAssetsQuery(id)));
+        return Ok(await _mediator.Send(new GetImageAssetQuery(id)));
     }
 
     [HttpGet]
@@ -50,7 +49,6 @@ public class ImageAssetsController : ControllerBase {
             return NoContent();
         }
     }
-
 
     [HttpGet]
     [Route("{id}/content")]
@@ -92,33 +90,24 @@ public class ImageAssetsController : ControllerBase {
                 stream.Close();
         }
     }
-//
-//    [HttpPatch]
-//    [Route("{id}")]
-//    public async Task<ActionResult<ImageAssetResource>> Update(string id, [FromBody] JsonPatchDocument<UpdateImageAssetResource> patch) {
-//        try {
-//            var command = new UpdateImageAssetCommand.Input(id, _mapper.Map<JsonPatchDocument<ImageAsset>>(patch));
-//            var result = await _mediator.Send(command);
-//            return Ok(_mapper.Map<ImageAssetResource>(result));
-//        } catch (Exception ex) {
-//            _logger.LogError(ex, $"Cannot update image asset '{id}'.");
-//            return null;
-//        }
-//    }
-//
-//    [HttpDelete]
-//    [Route("{id}")]
-//    public async Task<ActionResult<ImageAssetResource>> Delete(string id) {
-//        if (string.IsNullOrEmpty(id))
-//            return BadRequest();
-//
-//        try {
-//            var command = new DeleteImageAssetCommand.Input(id);
-//            var result = await _mediator.Send(command);
-//            return Ok(_mapper.Map<ImageAssetResource>(result));
-//        } catch (Exception ex) {
-//            _logger.LogError(ex, $"Cannot delete image asset '{id}'.");
-//            return null;
-//        }
-//    }
+
+    [HttpPut]
+    [Route("{id}")]
+    public async Task<ActionResult<ImageAssetDTO>> Update(Guid id, [FromBody] UpdateImageAssetResource resource) {
+        try {
+            var command = new UpdateImageAssetCommand(
+                id,
+                resource.Name,
+                resource.DisplayTime,
+                resource.IsActive,
+                resource.Order,
+                resource.NotBefore,
+                resource.NotAfter
+            );
+            return Ok(await _mediator.Send(command));
+        } catch (Exception ex) {
+            _logger.LogError(ex, $"Cannot update image asset '{id}'.");
+            return null;
+        }
+    }
 }

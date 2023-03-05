@@ -1,11 +1,14 @@
 using System;
-namespace Neon.Server.Controllers;
+using Neon.Domain;
 
-public class UpdateImageAssetResource {
+namespace Neon.Application;
+
+public class HtmlAssetDTO : IMapFrom<HtmlAsset> {
+    public string Id { get; set; }
     public string Name { get; set; }
+    public int Order { get; set; }
     public int DisplayTime { get; set; }
     public bool IsActive { get; set; }
-    public int Order { get; set; }
     public DateTime? NotBefore { get; set; }
     public DateTime? NotAfter { get; set; }
 }

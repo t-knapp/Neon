@@ -1,51 +1,38 @@
-// using System;
-// using System.Collections.Generic;
-// using System.Threading;
-// using System.Threading.Tasks;
-// using Microsoft.Extensions.Options;
-// using Microsoft.AspNetCore.JsonPatch;
-// using MediatR;
-// using AutoMapper;
-// using Neon.Domain;
-// 
-// namespace Neon.Application
-// {
-//     public class UpdateImageAssetCommand : IRequestHandler<UpdateImageAssetCommand.Input, ImageAsset> {
-//         public class Input : IRequest<ImageAsset> {
-//             public string Id { get; }
-//             public JsonPatchDocument<ImageAsset> Patch { get; }
-// 
-//             public Input(string id, JsonPatchDocument<ImageAsset> patch) {
-//                 Id = !string.IsNullOrEmpty(id) ? id : throw new ArgumentNullException(nameof(id));
-//                 Patch = patch ?? throw new ArgumentNullException(nameof(patch));
-//             }
-//         }
-// 
-//         private readonly IMongoCollection<ImageAsset> _assetCollection;
-//         private readonly ImageOptions _imageOptions;
-// 
-//         public UpdateImageAssetCommand(IMongoCollection<ImageAsset> assetCollection, IOptions<ImageOptions> imageOptions) {
-//             _assetCollection = assetCollection;
-//             _imageOptions = imageOptions.Value;
-//         }
-// 
-//         public async Task<ImageAsset> Handle(Input request, CancellationToken cancellationToken) {
-//             var existing = await _assetCollection.Find(_ => _.ID == request.Id).FirstAsync();
-// 
-//             request.Patch.ApplyTo(existing);
-// 
-//             var filterBuilder = Builders<ImageAsset>.Filter;
-//             var filter = filterBuilder.Eq(a => a.ID, request.Id);
-//             var updateBuilder = Builders<ImageAsset>.Update;
-//             var updates = new List<UpdateDefinition<ImageAsset>>();
-//             updates.Add(updateBuilder.Set(a => a.Name, existing.Name));
-//             updates.Add(updateBuilder.Set(a => a.DisplayTime, existing.DisplayTime));
-//             updates.Add(updateBuilder.Set(a => a.IsActive, existing.IsActive));
-//             updates.Add(updateBuilder.Set(a => a.Order, existing.Order));
-//             updates.Add(updateBuilder.Set(a => a.NotBefore, existing.NotBefore));
-//             updates.Add(updateBuilder.Set(a => a.NotAfter, existing.NotAfter));
-// 
-//             return await _assetCollection.FindOneAndUpdateAsync<ImageAsset>(filter, updateBuilder.Combine(updates), null, cancellationToken);
-//         }
-//     }
-// }
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.JsonPatch;
+using MediatR;
+using AutoMapper;
+
+namespace Neon.Application;
+
+public record UpdateImageAssetCommand(Guid Id, string Name, int DisplayTime, bool IsActive, int Order, DateTime? NotBefore, DateTime? NotAfter) : IRequest<ImageAssetDTO>;
+
+public class UpdateImageAssetCommandHandler : IRequestHandler<UpdateImageAssetCommand, ImageAssetDTO> {
+    
+    private readonly IApplicationDbContext _database;
+    private readonly IMapper _mapper;
+
+    public UpdateImageAssetCommandHandler(IApplicationDbContext database, IMapper mapper) {
+        _database = database;
+        _mapper = mapper;
+    }
+
+    public async Task<ImageAssetDTO> Handle(UpdateImageAssetCommand command, CancellationToken cancellationToken) {
+        var asset = await _database.ImageAssetRepository.OneAsync(command.Id, cancellationToken);
+        if (asset is null)
+            throw new KeyNotFoundException();
+
+        asset.Name = command.Name;
+        asset.Order = command.Order;
+        asset.DisplayTime = command.DisplayTime;
+        asset.IsActive = command.IsActive;
+        asset.NotBefore = command.NotBefore;
+        asset.NotAfter = command.NotAfter;
+        await _database.SaveChangesAsync(cancellationToken);
+        return _mapper.Map<ImageAssetDTO>(asset);
+    }
+}
