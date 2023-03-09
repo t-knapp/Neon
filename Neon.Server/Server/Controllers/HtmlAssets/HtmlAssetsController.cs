@@ -89,9 +89,9 @@ public class HtmlAssetsController : ControllerBase {
                 resource.DisplayTime,
                 resource.IsActive,
                 resource.Order,
+                resource.Content,
                 resource.NotBefore,
-                resource.NotAfter,
-                resource.Content
+                resource.NotAfter
             );
             return Ok(await _mediator.Send(command));
         } catch (Exception ex) {

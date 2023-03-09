@@ -1,14 +1,30 @@
-using System.Runtime.InteropServices;
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using MediatR;
 using AutoMapper;
 
 namespace Neon.Application;
 
-public record UpdateHtmlAssetCommand(Guid Id, string Name, int DisplayTime, bool IsActive, int Order, DateTime? NotBefore, DateTime? NotAfter, string Content) : IRequest<HtmlAssetDTO>;    
+public class UpdateHtmlAssetCommand : IRequest<HtmlAssetDTO> {
+
+    public Guid Id { get; init; }
+    public string Name { get; init; }
+    public int DisplayTime { get; init; }
+    public bool IsActive { get; init; }
+    public int Order  { get; init; }
+    public DateTime? NotBefore { get; init; }
+    public DateTime? NotAfter { get; init; }
+    public string Content { get; init; }
+
+    public UpdateHtmlAssetCommand(Guid id, string name, int displayTime, bool isActive, int order, string content, DateTime? notBefore, DateTime? notAfter) {
+        Id = id;
+        Name = name ?? throw new ArgumentException(nameof(name));
+        DisplayTime = (displayTime > 0) ? displayTime : throw new ArgumentException(nameof(displayTime));
+        IsActive = isActive;
+        Content = content ?? throw new ArgumentException(nameof(content));
+        NotBefore = notBefore;
+        NotAfter = notAfter;
+    }
+
+}
 public class UpdateHtmlAssetCommandHandler : IRequestHandler<UpdateHtmlAssetCommand, HtmlAssetDTO> {
 
     private readonly IApplicationDbContext _database;
