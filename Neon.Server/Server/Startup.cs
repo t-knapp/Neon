@@ -30,7 +30,7 @@ namespace Neon.Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddOptions();
-            services.AddOptions<ImageOptions>().Bind(Configuration.GetSection(ImageOptions.IDENTIFIER));
+            services.AddOptions<ImageOptions>().Bind(Configuration.GetSection(nameof(ImageOptions)));
 
             services.AddApplication(Configuration);
             services.AddInfrastructure(Configuration);
