@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Authorization;
 using Neon.Application;
 using AutoMapper;
 using MediatR;
@@ -12,6 +13,7 @@ using Neon.Domain;
 
 namespace Neon.Server.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class AssetsController : ControllerBase {
