@@ -86,6 +86,7 @@ namespace Neon.Server
                                 { "openid", "OpenId" },
                                 { "scopes", "Scopes" },
                                 { "email", "E-Mail"},
+                                { "roles", "Roles" }
                             },
                         },
                     },
