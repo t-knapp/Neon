@@ -74,7 +74,8 @@ namespace Neon.Server
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("Reader", policy => policy.RequireClaim("Reader"));
+                options.AddPolicy("Reader", policy => policy.RequireRole("Reader", "Editor"));
+                options.AddPolicy("Editor", policy => policy.RequireRole("Editor"));
             });
 
             services.AddControllers(options =>

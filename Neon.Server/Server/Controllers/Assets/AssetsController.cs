@@ -13,7 +13,7 @@ using Neon.Domain;
 
 namespace Neon.Server.Controllers;
 
-[Authorize( Policy = "Reader" )]
+[Authorize( Roles = "Reader" )]
 [ApiController]
 [Route("[controller]")]
 public class AssetsController : ControllerBase {
@@ -49,6 +49,7 @@ public class AssetsController : ControllerBase {
 //        }
 //    }
 
+   [Authorize( Roles = "Editor" )]
    [HttpDelete]
    [Route("{id}")]
    public async Task<ActionResult<AssetDTO>> Delete(Guid id) {

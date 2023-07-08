@@ -34,8 +34,9 @@ public class ApiKeyAuthenticationSchemeHandler : AuthenticationHandler<ApiKeyAut
         if(!Options.ReadOnlyKey.Equals(apiKey))
             return AuthenticateResult.Fail("Api-Key not allowed.");
         
-        // If the session is valid, return success:
-        var claims = new[] { new Claim("Reader", "Reader") };
+        // TODO: Use Role configured in handler-options
+        var claims = new[] { new Claim(ClaimTypes.Role, "Reader") };
+        // var claims = new[] { new Claim(ClaimTypes.Role, "Editor") };
         var principal = new ClaimsPrincipal(new ClaimsIdentity(claims, "Tokens"));
         var ticket = new AuthenticationTicket(principal, this.Scheme.Name);
         return AuthenticateResult.Success(ticket);
