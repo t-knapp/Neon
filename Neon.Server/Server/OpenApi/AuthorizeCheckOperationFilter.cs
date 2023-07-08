@@ -32,7 +32,7 @@ public class AuthorizeCheckOperationFilter : IOperationFilter
                                 Id = "OAuth2"
                             }
                         }
-                    ] = new[] { "anxt.verwaltung" }
+                    ] = new[] { "neon.server" }
                 },
             };
         }

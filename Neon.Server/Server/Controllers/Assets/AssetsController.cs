@@ -13,7 +13,7 @@ using Neon.Domain;
 
 namespace Neon.Server.Controllers;
 
-[Authorize]
+[Authorize( Policy = "Reader" )]
 [ApiController]
 [Route("[controller]")]
 public class AssetsController : ControllerBase {

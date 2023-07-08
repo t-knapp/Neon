@@ -1,3 +1,4 @@
+using System.Collections;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,6 +33,7 @@ namespace Neon.Server
             services.AddOptions();
             services.AddOptions<ImageOptions>().Bind(Configuration.GetSection(nameof(ImageOptions)));
             services.AddOptions<JwtOptions>().Bind(Configuration.GetSection(nameof(JwtOptions)));
+            services.AddOptions<ApiKeyAuthenticationOptions>().Bind(Configuration.GetSection(nameof(ApiKeyAuthenticationOptions)));
 
             services.AddApplication(Configuration);
             services.AddInfrastructure(Configuration);
@@ -63,6 +65,17 @@ namespace Neon.Server
                     };
 
                 });
+
+            services.AddAuthentication("ApiKey")
+                .AddScheme<ApiKeyAuthenticationHandlerOptions, ApiKeyAuthenticationSchemeHandler>(
+                    "ApiKey",
+                    o => o.ReadOnlyKey = Configuration.GetSection(nameof(ApiKeyAuthenticationOptions)).GetValue<string>(nameof(ApiKeyAuthenticationOptions.ApiKey))
+                );
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Reader", policy => policy.RequireClaim("Reader"));
+            });
 
             services.AddControllers(options =>
             {
