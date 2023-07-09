@@ -4,12 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
 using AutoMapper;
 using MediatR;
 using Neon.Application;
 
 namespace Neon.Server.Controllers;
 
+[Authorize( Roles = "Reader" )]
 [ApiController]
 [Route("[controller]")]
 public class HtmlAssetsController : ControllerBase {
@@ -60,6 +62,7 @@ public class HtmlAssetsController : ControllerBase {
         }
     }
 
+    [Authorize( Roles = "Editor" )]
     [HttpPost]
     public async Task<ActionResult<HtmlAssetDTO>> Add([FromForm] AddHtmlAssetResource addHtmlAssetResource) {
         try {
@@ -79,6 +82,7 @@ public class HtmlAssetsController : ControllerBase {
         }
     }
 
+    [Authorize( Roles = "Editor" )]
     [HttpPut]
     [Route("{id}")]
     public async Task<ActionResult<HtmlAssetDTO>> Update(Guid id, UpdateHtmlAssetResource resource) {

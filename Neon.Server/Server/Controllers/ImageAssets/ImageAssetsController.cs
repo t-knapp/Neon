@@ -13,6 +13,7 @@ using Neon.Application;
 
 namespace Neon.Server.Controllers;
 
+[Authorize( Roles = "Reader" )]
 [ApiController]
 [Route("[controller]")]
 public class ImageAssetsController : ControllerBase {
@@ -66,6 +67,7 @@ public class ImageAssetsController : ControllerBase {
         }
     }
 
+    [Authorize( Roles = "Editor" )]
     [HttpPost]
     public async Task<IActionResult> Add([FromForm] AddImageAssetResource addResource) {
         Stream stream = null;
@@ -91,6 +93,7 @@ public class ImageAssetsController : ControllerBase {
         }
     }
 
+    [Authorize( Roles = "Editor" )]
     [HttpPut]
     [Route("{id}")]
     public async Task<ActionResult<ImageAssetDTO>> Update(Guid id, [FromBody] UpdateImageAssetResource resource) {

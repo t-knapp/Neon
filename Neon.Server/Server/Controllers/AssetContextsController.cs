@@ -4,12 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
 using Neon.Domain;
 using Neon.Application;
 using MediatR;
 
 namespace Neon.Server.Controllers;
 
+[Authorize( Roles = "Reader" )]
 [ApiController]
 [Route("[controller]")]
 public class AssetContextsController : ControllerBase

@@ -69,7 +69,7 @@ namespace Neon.Server
             services.AddAuthentication("ApiKey")
                 .AddScheme<ApiKeyAuthenticationHandlerOptions, ApiKeyAuthenticationSchemeHandler>(
                     "ApiKey",
-                    o => o.ReadOnlyKey = Configuration.GetSection(nameof(ApiKeyAuthenticationOptions)).GetValue<string>(nameof(ApiKeyAuthenticationOptions.ApiKey))
+                    o => o.ApiKeys = Configuration.GetSection("ApiKeyAuthenticationOptions:ApiKeys").Get<IEnumerable<ApiKeyAuthenticationOptions.ApiKey>>()
                 );
 
             services.AddAuthorization(options =>

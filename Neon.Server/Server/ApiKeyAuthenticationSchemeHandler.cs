@@ -1,3 +1,4 @@
+using System.Linq;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
@@ -10,7 +11,7 @@ using Microsoft.Extensions.Options;
 namespace Neon.Server;
 
 public class ApiKeyAuthenticationHandlerOptions : AuthenticationSchemeOptions {
-    public string ReadOnlyKey { get; set; }
+    public IEnumerable<ApiKeyAuthenticationOptions.ApiKey> ApiKeys { get; set; } = new List<ApiKeyAuthenticationOptions.ApiKey>();
 }
 
 public class ApiKeyAuthenticationSchemeHandler : AuthenticationHandler<ApiKeyAuthenticationHandlerOptions>
@@ -27,16 +28,15 @@ public class ApiKeyAuthenticationSchemeHandler : AuthenticationHandler<ApiKeyAut
     {
         // Read the token from request headers/cookies
         // Check that it's a valid session, depending on your implementation
-        var apiKey = Context.Request.Query["api-key"];
-        if(String.IsNullOrEmpty(apiKey))
+        var requestApiKey = Context.Request.Query["api-key"];
+        if(String.IsNullOrEmpty(requestApiKey))
             return AuthenticateResult.Fail("Api-Key is empty.");
         
-        if(!Options.ReadOnlyKey.Equals(apiKey))
-            return AuthenticateResult.Fail("Api-Key not allowed.");
+        var apiKey = Options.ApiKeys.FirstOrDefault(key => key.Value == requestApiKey);
+        if(apiKey is null)
+            return AuthenticateResult.Fail("Api-Key not found.");
         
-        // TODO: Use Role configured in handler-options
-        var claims = new[] { new Claim(ClaimTypes.Role, "Reader") };
-        // var claims = new[] { new Claim(ClaimTypes.Role, "Editor") };
+        var claims = apiKey.Roles.Select(role => new Claim(ClaimTypes.Role, role));
         var principal = new ClaimsPrincipal(new ClaimsIdentity(claims, "Tokens"));
         var ticket = new AuthenticationTicket(principal, this.Scheme.Name);
         return AuthenticateResult.Success(ticket);
